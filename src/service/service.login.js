@@ -20,7 +20,6 @@ const login = async (username, password) => {
         const decodedToken = jwtDecode(data.token)
         sessionStorage.setItem('token', data.token)
         sessionStorage.setItem('user', JSON.stringify(decodedToken))
-        window.location.href = '/'
         return data
     } catch (error) {
         console.error('Error al iniciar sesión:', error)

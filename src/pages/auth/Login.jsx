@@ -3,20 +3,26 @@ import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import login from '../../service/service.login'
+import LoadingButton from '../../components/LoadingButton'
 
 function Login() {
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     })
+    const [loading, setLoading] = useState(false)
 
     const handleLogin = async (e) => {
-        e.preventDefault()
+        // e.preventDefault()
+        setLoading(true)
         try {
             const data = await login(formData.username, formData.password)
             console.log('Datos de login:', data)
         } catch (error) {
             console.error('Error al iniciar sesión:', error)
+        } finally {
+            setLoading(false)
+            window.location.href = '/'
         }
     }
 
@@ -31,7 +37,7 @@ function Login() {
                         type="text"
                         name="username"
                         value={formData.username}
-                        onChange={(e) => setFormData({...formData, username: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                         className="w-full px-3 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
                         required
                     />
@@ -43,18 +49,19 @@ function Login() {
                         type="password"
                         name="password"
                         value={formData.password}
-                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         className="w-full px-3 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
                         required
                     />
                 </div>
 
-                <button
+                {/* <button
                     onClick={handleLogin}
                     className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
                     Iniciar Sesión
-                </button>
+                </button> */}
+                <LoadingButton loading={loading} onClick={handleLogin}>Iniciar Sesión</LoadingButton>
             </div>
 
             <p className="text-center text-sm">

@@ -1,14 +1,23 @@
 import React from 'react'
-import Sidebar from '../components/Sidebar'
+import Sidebar, { SidebarItem } from '../components/Sidebar'
+import { ArrowLeftRight, Home } from 'lucide-react'
+import ProfileProvider from '../context/ProfileContext'
+
 
 const MainLayout = ({ children }) => {
-  const { username, role} = JSON.parse(sessionStorage.getItem('user'))
   return (
     <div className="flex">
-      <Sidebar></Sidebar>
-      <main className="flex-1 p-4">
-        {children}
-      </main>
+      <ProfileProvider>
+        <Sidebar>
+          <SidebarItem to="/" icon={<Home size={20} />} text="Inicio" />
+          <SidebarItem to="/diario" icon={<ArrowLeftRight size={20} />} text="Diario" />
+          <SidebarItem to="/anteriores" icon={<ArrowLeftRight size={20} />} text="Anteriores" />
+
+        </Sidebar>
+        <main className="flex-1 p-4">
+          {children}
+        </main>
+      </ProfileProvider>
     </div>
   )
 }
