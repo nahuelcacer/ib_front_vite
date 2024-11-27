@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 
 const login = async (username, password) => {
     try {
-        const response = await fetch('/api/login/', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}login/`, {
             method: 'POST',
             credentials: 'include',
             headers: {

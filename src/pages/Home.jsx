@@ -1,12 +1,7 @@
-import React from 'react'
-import MainLayout from '../layouts/MainLayout'
+import React from "react";
 
-const Home = () => {  
-  return (
-    <MainLayout>
-      <div className='text-2xl font-bold'>Home</div>
-    </MainLayout>
-  )
-}
+const Home = () => {
+  return <div className="text-2xl font-bold">Home</div>;
+};
 
-export default Home
+export default Home;
