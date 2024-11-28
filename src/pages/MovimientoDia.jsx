@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import getMovimientoDia from '../service/service.movdia'
-import { Chip, Input, Modal, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import { formatArs } from '../utils/formatter'
+import { I18nProvider } from '@react-aria/i18n'
 
 const MovimientoDia = () => {
   const [banks, setBanks] = useState(JSON.parse(sessionStorage.getItem('user')).accounts.map(
@@ -15,6 +16,15 @@ const MovimientoDia = () => {
   const [gral, setGral] = useState(null)
   const [page, setPage] = useState(1)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [selectedMov, setSelectedMov] = useState(null)
+  const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '' })
+
+
+  const handleSelectMov = (v) => {
+    setReceiptData({ ...receiptData, user_id: v })
+    onOpen()
+
+  }
 
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)
@@ -90,7 +100,7 @@ const MovimientoDia = () => {
             {items?.map((mov, index) => {
               // destructurar mov 
               return (
-                <TableRow className='hover:bg-gray-100/50 active:bg-gray-200' key={index} onClick={onOpen}>
+                <TableRow className='hover:bg-gray-100/50 active:bg-gray-200' key={index} onClick={() => handleSelectMov(mov.id)}>
                   <TableCell>{mov.id}</TableCell>
                   <TableCell>{mov.code_description_ib}</TableCell>
                   <TableCell>{mov.code_description_bank}</TableCell>
@@ -110,7 +120,20 @@ const MovimientoDia = () => {
         </Table>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
-            <ModalHeader >Title</ModalHeader>
+            <ModalHeader >Recibo</ModalHeader>
+            <ModalBody>
+              <div className='flex flex-col gap-4 pb-4'>
+                <p className='text-gray-500'>Ingresa la fecha en la que se realizo el recibo</p>
+                <Input label="Descripcion" onChange={(e) => { setReceiptData({ ...receiptData, description: e.target.value }) }}></Input>
+                <I18nProvider locale='es-AR'>
+                  <DatePicker label="Fecha del recibo" size='md' onChange={(e) => console.log(e)}></DatePicker>
+                </I18nProvider>
+                <div className='flex gap-2'>
+                  <Button>Cancelar</Button>
+                  <Button color='primary'>Registrar</Button>
+                </div>
+              </div>
+            </ModalBody>
           </ModalContent>
         </Modal>
       </div>
