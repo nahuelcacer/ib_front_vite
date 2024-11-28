@@ -25,7 +25,7 @@ export default function Sidebar({ children }) {
             </button>
 
             <aside className="h-screen">
-                <nav className={`h-full flex flex-col bg-black border-r shadow-sm fixed md:relative w-72 z-40 transition-all duration-300 ${showSidebar ? "left-0" : "-left-72"
+                <nav className={`h-full flex bg-black flex-col border-r shadow-sm fixed md:relative w-72 z-40 transition-all duration-300 ${showSidebar ? "left-0" : "-left-72"
                     } md:left-0 ${expanded ? "md:w-72" : "md:w-16"
                     }`}>
                     <div className="p-4 pb-2 flex justify-between items-center">

@@ -13,9 +13,9 @@ import { NextUIProvider } from '@nextui-org/react'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
-  
+
   return (
-    <BrowserRouter> 
+    <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={!token ? <Login /> : <Navigate to="/" />} />
@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/diario" element={<MovimientoDia />} />
         </Route>
-      
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
@@ -36,7 +36,10 @@ const App = () => {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <NextUIProvider>
-      <App />
+      <main >
+
+        <App />
+      </main>
     </NextUIProvider>
   </StrictMode>
 )
