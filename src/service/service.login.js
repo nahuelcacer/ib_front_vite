@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-const login = async (username, password) => {
+const login = async (username, password, institution) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}login/`, {
             method: 'POST',
@@ -9,7 +9,7 @@ const login = async (username, password) => {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ username, password, institution:1 })
+            body: JSON.stringify({ username, password, institution })
         })
         
         if (!response.ok) {

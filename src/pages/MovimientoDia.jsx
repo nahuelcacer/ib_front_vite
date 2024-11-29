@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react'
 import getMovimientoDia from '../service/service.movdia'
 import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
-import { formatArs } from '../utils/formatter'
+import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
+import { registerReceipt } from '../service/service.receipt'
 
 const MovimientoDia = () => {
+  const user = JSON.parse(sessionStorage.getItem('user'))
   const [banks, setBanks] = useState(JSON.parse(sessionStorage.getItem('user')).accounts.map(
     account => ({
       ...account,
@@ -17,14 +19,14 @@ const MovimientoDia = () => {
   const [page, setPage] = useState(1)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedMov, setSelectedMov] = useState(null)
-  const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '' })
+  const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '', institution_id: '' })
 
 
   const handleSelectMov = (v) => {
-    setReceiptData({ ...receiptData, user_id: v })
-    onOpen()
+    !v.has_receipt ? onOpen() : setReceiptData({ ...receiptData, transfer_id: v.id, user_id: user.id, institution_id: parseInt(user.institution_id) })
 
   }
+
 
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)
@@ -45,6 +47,11 @@ const MovimientoDia = () => {
     return data
   }, [page, movimientos])
 
+
+  const handleRegisterReceipt = async () => {
+    const response = await registerReceipt(receiptData)
+    console.log(response)
+  } 
   return (
     <div className='flex flex-col gap-2'>
       <div className='grid grid-cols-[2fr_1fr_1fr] gap-2 py-2'>
@@ -100,16 +107,22 @@ const MovimientoDia = () => {
             {items?.map((mov, index) => {
               // destructurar mov 
               return (
-                <TableRow className='hover:bg-gray-100/50 active:bg-gray-200' key={index} onClick={() => handleSelectMov(mov.id)}>
+                <TableRow className={`hover:bg-gray-100/50 active:bg-gray-200 cursor-pointer ${mov.has_receipt ? 'bg-green-300/50' : ''}`} key={index} onClick={() => handleSelectMov(mov)}>
                   <TableCell>{mov.id}</TableCell>
                   <TableCell>{mov.code_description_ib}</TableCell>
                   <TableCell>{mov.code_description_bank}</TableCell>
                   <TableCell>{mov.customer_cuit || ""}</TableCell>
                   <TableCell>{mov.depositor_description || ""}</TableCell>
                   <TableCell>
-                    <p className='text-green-600 font-semibold'>
-                      {formatArs.format(mov.amount)}
-                    </p>
+                    {mov.debit_credit_type === "D" ?
+                      <p className='text-red-600 font-semibold'>
+                        {formatArs.format(mov.amount)}
+                      </p>
+                      :
+                      <p className='text-green-600 font-semibold'>
+                        {formatArs.format(mov.amount)}
+                      </p>
+                    }
                   </TableCell>
                   <TableCell>{mov.process_date}</TableCell>
                   <TableCell>{mov.debit_credit_type}</TableCell>
@@ -118,7 +131,7 @@ const MovimientoDia = () => {
             })}
           </TableBody>
         </Table>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setReceiptData({ ...receiptData, description: '', user_id: '', transfer_id: '', fecha_recibo: '' })}>
           <ModalContent>
             <ModalHeader >Recibo</ModalHeader>
             <ModalBody>
@@ -126,11 +139,11 @@ const MovimientoDia = () => {
                 <p className='text-gray-500'>Ingresa la fecha en la que se realizo el recibo</p>
                 <Input label="Descripcion" onChange={(e) => { setReceiptData({ ...receiptData, description: e.target.value }) }}></Input>
                 <I18nProvider locale='es-AR'>
-                  <DatePicker label="Fecha del recibo" size='md' onChange={(e) => console.log(e)}></DatePicker>
+                  <DatePicker label="Fecha del recibo" size='md' onChange={(e) => { setReceiptData({ ...receiptData, fecha_recibo: formatDate(e) }) }}></DatePicker>
                 </I18nProvider>
                 <div className='flex gap-2'>
-                  <Button>Cancelar</Button>
-                  <Button color='primary'>Registrar</Button>
+                  <Button onClick={onOpenChange}>Cancelar</Button>
+                  <Button color='primary' onClick={handleRegisterReceipt}>Registrar</Button>
                 </div>
               </div>
             </ModalBody>

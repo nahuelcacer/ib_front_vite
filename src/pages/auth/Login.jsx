@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import login from "../../service/service.login";
 import LoadingButton from "../../components/LoadingButton";
-import { Button, Input, Select, Spinner } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
 import { getInstitutions } from "../../service/service.instituions";
 
 function Login() {
@@ -15,7 +15,7 @@ function Login() {
   const handleLogin = async (e) => {
     setLoading(true);
     try {
-      const data = await login(formData.username, formData.password);
+      const data = await login(formData.username, formData.password, formData.institution);
       console.log("Datos de login:", data);
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
@@ -24,17 +24,18 @@ function Login() {
       window.location.href = "/";
     }
   };
-  useEffect(() =>{
+  useEffect(() => {
     const fetchInstitutions = async () => {
-        try {
-          const data = await getInstitutions(); // Assume this is an API call
-          setInstitutions(data);
-        } catch (error) {
-          console.error("Failed to fetch institutions:", error);
-        }
-      };
-  
-      fetchInstitutions();
+      try {
+        const data = await getInstitutions(); // Assume this is an API call
+        console.log("Instituciones cargadas:", data);
+        setInstitutions(data);
+      } catch (error) {
+        console.error("Failed to fetch institutions:", error);
+      }
+    };
+
+    fetchInstitutions();
   }, [])
 
   return (
@@ -57,12 +58,17 @@ function Login() {
           }
           name="password"
         ></Input>
-        <Select>
-            {/* {institutions?.map(ins => {
-                return (
-                    <Option>{ins.nombre}</Option>
-                )
-            })} */}
+        <Select
+          label="Institución"
+          placeholder="Selecciona una institución"
+          name="institution"
+          onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
+        >
+          {institutions?.map((ins) => (
+            <SelectItem key={ins.id} value={ins.id}>
+              {ins.nombre}
+            </SelectItem>
+          ))}
         </Select>
         <LoadingButton text={'Iniciar sesión'} onClick={handleLogin} loading={loading}></LoadingButton>
       </div>
