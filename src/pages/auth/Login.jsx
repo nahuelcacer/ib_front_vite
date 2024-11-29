@@ -1,77 +1,80 @@
-import React from 'react'
+import React, { useEffect } from "react";
 
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import login from '../../service/service.login'
-import LoadingButton from '../../components/LoadingButton'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import login from "../../service/service.login";
+import LoadingButton from "../../components/LoadingButton";
+import { Button, Input, Select, Spinner } from "@nextui-org/react";
+import { getInstitutions } from "../../service/service.instituions";
 
 function Login() {
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-    })
-    const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [institutions, setInstitutions] = useState(null)
 
-    const handleLogin = async (e) => {
-        // e.preventDefault()
-        setLoading(true)
-        try {
-            const data = await login(formData.username, formData.password)
-            console.log('Datos de login:', data)
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error)
-        } finally {
-            setLoading(false)
-            window.location.href = '/'
-        }
+  const handleLogin = async (e) => {
+    setLoading(true);
+    try {
+      const data = await login(formData.username, formData.password);
+      console.log("Datos de login:", data);
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+    } finally {
+      setLoading(false);
+      window.location.href = "/";
     }
+  };
+  useEffect(() =>{
+    const fetchInstitutions = async () => {
+        try {
+          const data = await getInstitutions(); // Assume this is an API call
+          setInstitutions(data);
+        } catch (error) {
+          console.error("Failed to fetch institutions:", error);
+        }
+      };
+  
+      fetchInstitutions();
+  }, [])
 
-    return (
-        <div className="space-y-6">
-            <h3 className="text-xl font-medium text-center">Iniciar Sesión</h3>
+  return (
+    <div className="space-y-6">
+      <h3 className="text-xl font-medium text-center">Iniciar Sesión</h3>
 
-            <div className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-800">Usuario</label>
-                    <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
-                        required
-                    />
-                </div>
+      <div className="space-y-4">
+        <Input
+          label="Usuario"
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
+          name="username"
+        ></Input>
+        <Input
+          type="password"
+          label="Contraseña"
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
+          name="password"
+        ></Input>
+        <Select>
+            {/* {institutions?.map(ins => {
+                return (
+                    <Option>{ins.nombre}</Option>
+                )
+            })} */}
+        </Select>
+        <LoadingButton text={'Iniciar sesión'} onClick={handleLogin} loading={loading}></LoadingButton>
+      </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-800">Contraseña</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
-                        required
-                    />
-                </div>
-
-                {/* <button
-                    onClick={handleLogin}
-                    className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                    Iniciar Sesión
-                </button> */}
-                <LoadingButton loading={loading} onClick={handleLogin}>Iniciar Sesión</LoadingButton>
-            </div>
-
-            <p className="text-center text-sm">
-                ¿No tienes cuenta?{' '}
-                <Link to="/auth/register" className="text-gray-800 hover:text-gray-600">
-                    Regístrate
-                </Link>
-            </p>
-        </div>
-    )
+      <p className="text-center text-sm">
+        ¿No tienes cuenta?{" "}
+        <Link to="/auth/register" className="text-gray-800 hover:text-gray-600">
+          Regístrate
+        </Link>
+      </p>
+    </div>
+  );
 }
 
-export default Login
+export default Login;
