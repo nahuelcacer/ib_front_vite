@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import getMovimientoDia from '../service/service.movdia'
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import {  Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
+import { AlertCircle, Check, Receipt, X } from 'lucide-react'
 
 const MovimientoDia = () => {
   const user = JSON.parse(sessionStorage.getItem('user'))
@@ -51,7 +52,7 @@ const MovimientoDia = () => {
   const handleRegisterReceipt = async () => {
     const response = await registerReceipt(receiptData)
     console.log(response)
-  } 
+  }
   return (
     <div className='flex flex-col gap-2'>
       <div className='grid grid-cols-[2fr_1fr_1fr] gap-2 py-2'>
@@ -93,6 +94,7 @@ const MovimientoDia = () => {
           }
         >
           <TableHeader>
+            <TableColumn>Comprobante</TableColumn>
             <TableColumn>ID</TableColumn>
             <TableColumn>Desc (IB)</TableColumn>
             <TableColumn>Desc (Banco)</TableColumn>
@@ -107,7 +109,32 @@ const MovimientoDia = () => {
             {items?.map((mov, index) => {
               // destructurar mov 
               return (
-                <TableRow className={`hover:bg-gray-100/50 active:bg-gray-200 cursor-pointer ${mov.has_receipt ? 'bg-green-300/50' : ''}`} key={index} onClick={() => handleSelectMov(mov)}>
+                <TableRow className={`hover:bg-gray-100/50 active:bg-gray-200 cursor-pointer`} key={index} onClick={() => handleSelectMov(mov)}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Chip
+                        variant={mov.has_receipt ? "outline" : "secondary"}
+                        className={mov.has_receipt ? "bg-primary/5" : "bg-gray-200"}
+                      >
+                        {mov.has_receipt ? (
+                          <div className='flex items-center gap-2'>
+                            <Receipt className="mr-1 h-3 w-3" />
+                            Comprobante
+                          </div>
+                        ) : (
+                          <div className='flex items-center gap-2'>
+                            <X className="mr-1 h-3 w-3" />
+                            Sin comprobante
+                        </div >
+                        )}
+                      </Chip>
+                      {mov.has_receipt ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>{mov.id}</TableCell>
                   <TableCell>{mov.code_description_ib}</TableCell>
                   <TableCell>{mov.code_description_bank}</TableCell>
@@ -124,8 +151,12 @@ const MovimientoDia = () => {
                       </p>
                     }
                   </TableCell>
-                  <TableCell>{mov.process_date}</TableCell>
-                  <TableCell>{mov.debit_credit_type}</TableCell>
+                  <TableCell>{new Date(mov.process_date).toLocaleDateString('es-AR')} {new Date(mov.process_date).toLocaleTimeString('es-AR')}</TableCell>
+                  <TableCell>
+                    <Chip size='sm' color='primary'>
+                      {mov.debit_credit_type === "D" ? "Debito" : "Credito"}
+                    </Chip>
+                  </TableCell>
                 </TableRow>
               )
             })}
