@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import getMovimientoDia from '../service/service.movdia'
-import {  Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import { Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
-import { AlertCircle, Check, Receipt, X } from 'lucide-react'
+import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
 
 const MovimientoDia = () => {
   const user = JSON.parse(sessionStorage.getItem('user'))
@@ -125,7 +125,7 @@ const MovimientoDia = () => {
                           <div className='flex items-center gap-2'>
                             <X className="mr-1 h-3 w-3" />
                             Sin comprobante
-                        </div >
+                          </div >
                         )}
                       </Chip>
                       {mov.has_receipt ? (
@@ -142,13 +142,19 @@ const MovimientoDia = () => {
                   <TableCell>{mov.depositor_description || ""}</TableCell>
                   <TableCell>
                     {mov.debit_credit_type === "D" ?
-                      <p className='text-red-600 font-semibold'>
-                        {formatArs.format(mov.amount)}
-                      </p>
+                      <div className='flex items-center gap-2'>
+                        <ArrowDownRight className='h-4 w-4 text-red-600' />
+                        <p className='text-red-600 font-semibold'>
+                          {formatArs.format(mov.amount)}
+                        </p>
+                      </div>
                       :
-                      <p className='text-green-600 font-semibold'>
-                        {formatArs.format(mov.amount)}
-                      </p>
+                      <div className='flex items-center gap-2'>
+                        <ArrowUpRight className='h-4 w-4 text-green-600' />
+                        <p className='text-green-600 font-semibold'>
+                          {formatArs.format(mov.amount)}
+                        </p>
+                      </div>
                     }
                   </TableCell>
                   <TableCell>{new Date(mov.process_date).toLocaleDateString('es-AR')} {new Date(mov.process_date).toLocaleTimeString('es-AR')}</TableCell>
