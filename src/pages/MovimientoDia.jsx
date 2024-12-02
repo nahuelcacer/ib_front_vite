@@ -19,7 +19,6 @@ const MovimientoDia = () => {
   const [gral, setGral] = useState(null)
   const [page, setPage] = useState(1)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedMov, setSelectedMov] = useState(null)
   const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '', institution_id: '' })
 
 
@@ -32,7 +31,7 @@ const MovimientoDia = () => {
         user_id: user.id,
         institution_id: parseInt(user.institution_id)
       });
-      setSelectedMov(v);
+      null
     }
   }
 
