@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { getSaldos } from "../service/service.saldos";
 
 
 const Card = ({ title, value, sx }) => {
@@ -8,6 +9,9 @@ const Card = ({ title, value, sx }) => {
   </div>
 } 
 const Home = () => {
+  useEffect(() => {
+    const response = getSaldos('2024-11-29', '2024-11-30')
+  } , [])
   return <div className="text-2xl font-bold">
     <Card title="Total de movimientos" value="100" sx={{ width: '300px', margin: '10px' }}/>
     <Card title="Total de recibos" value="100" sx={{ width: '300px', margin: '10px' }}/>
