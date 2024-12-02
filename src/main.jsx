@@ -10,6 +10,7 @@ import ErrorPage from './pages/ErrorPage'
 import MovimientoDia from './pages/MovimientoDia'
 import MainLayout from './layouts/MainLayout'
 import { NextUIProvider } from '@nextui-org/react'
+import MovimientoAnteriores from './pages/MovimientoAnteriores'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/" element={token ? <MainLayout /> : <Navigate to="/auth/login" />} >
           <Route path="/" element={<Home />} />
           <Route path="/diario" element={<MovimientoDia />} />
+          <Route path="/anteriores" element={<MovimientoAnteriores />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
