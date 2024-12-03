@@ -32,8 +32,7 @@ const MainLayout = () => {
         </div>
         <Sidebar>
           <SidebarItem to="/" icon={<Home size={20} />} text="Inicio" />
-          <SidebarItem to="/diario" icon={<ArrowLeftRight size={20} />} text="Diario" />
-          <SidebarItem to="/anteriores" icon={<ArrowLeftRight size={20} />} text="Anteriores" />
+            <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
 
         </Sidebar>
         <main className="flex-1 p-4 text-center align-middle pt-20">
