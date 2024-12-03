@@ -35,7 +35,7 @@ const MainLayout = () => {
             <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
 
         </Sidebar>
-        <main className="flex-1 p-4 text-center align-middle pt-20">
+        <main className="flex-1 p-4 text-center align-middle">
           <Outlet />
         </main>
       </ProfileProvider>
