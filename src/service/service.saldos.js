@@ -1,6 +1,6 @@
 import axios from "axios"; // Importar Axios
 
-export const getSaldos = async (desde, hasta) => {
+export const getSaldos = async (desde, hasta, setter) => {
   try {
     const userData = sessionStorage.getItem("user");
     const { token_ib, client_id, customer_id, accounts } = JSON.parse(userData);
@@ -24,7 +24,9 @@ export const getSaldos = async (desde, hasta) => {
         customer_id: customer_id,
       },
     });
-    return response.data;
+    const data = response.data
+    setter(data)
+    return data
   } catch (err) {
     console.error(err);
   }

@@ -1,0 +1,3 @@
+const adapterSaldos = (data) => {
+    
+}
