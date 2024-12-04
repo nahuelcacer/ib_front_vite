@@ -17,22 +17,22 @@ const MainLayout = () => {
     }
     fetchInstitutions()
     const selectedInstitution = JSON.parse(sessionStorage.getItem('user')).institution_id
-    setSelectedInstitution(institution?.find(inst => inst.id === parseInt(selectedInstitution)) )
+    setSelectedInstitution(institution?.find(inst => inst.id === parseInt(selectedInstitution)))
   }, [selectedInstitution])
   return (
     <div className="flex">
       <ProfileProvider>
         <div className="fixed top-4 right-4 z-50">
-          <Select>
+          <Select placeholder='Selecciona una institución'>
             {institution?.map((inst) => (
               <SelectItem key={inst.id}>{inst.nombre}</SelectItem>
             ))}
           </Select>
-          
+
         </div>
         <Sidebar>
           <SidebarItem to="/" icon={<Home size={20} />} text="Inicio" />
-            <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
+          <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
 
         </Sidebar>
         <main className="flex-1 p-4 text-center align-middle">

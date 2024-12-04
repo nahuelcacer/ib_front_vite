@@ -7,10 +7,8 @@ import AuthLayout from './layouts/AuthLayout'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import ErrorPage from './pages/ErrorPage'
-import MovimientoDia from './pages/MovimientoDia'
 import MainLayout from './layouts/MainLayout'
 import { NextUIProvider } from '@nextui-org/react'
-import MovimientoAnteriores from './pages/MovimientoAnteriores'
 import Movimientos from './pages/Movimientos'
 
 const App = () => {

@@ -5,13 +5,9 @@ import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
-import adapterMovdia from '../adapters/adapter.movdia'
 
-const MovimientoDia = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'))
-  const [banks, setBanks] = useState(JSON.parse(sessionStorage.getItem('user')).accounts.map(
-    account => adapterMovdia(account)
-  ))
+const MovimientoDia = ({banks, user_id, institution_id}) => {
+
   const [movimientos, setMovimientos] = useState(null)
   const [gral, setGral] = useState(null)
   const [page, setPage] = useState(1)
@@ -25,8 +21,8 @@ const MovimientoDia = () => {
       setReceiptData({
         ...receiptData,
         transfer_id: v.id,
-        user_id: user.id,
-        institution_id: parseInt(user.institution_id)
+        user_id: user_id,
+        institution_id: institution_id
       });
       null
     }
@@ -71,6 +67,7 @@ const MovimientoDia = () => {
       <div className='grid grid-cols-[2fr_1fr_1fr] gap-2 py-2'>
         <h1 className='text-2xl font-bold text-left'>Movimientos del día</h1>
         <Select
+          aria-label='Selecciona un banco'
           items={banks}
           // label='Selecciona un banco' 
           placeholder='Selecciona un banco'
@@ -79,7 +76,7 @@ const MovimientoDia = () => {
             console.log(items)
             return items.map((item) => {
               return (
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center" aria-label={item.data.label}>
                   <Avatar src={item.data.img} alt={item.data.label} className="w-8 h-8" />
                   <div className='flex flex-col'>
                     <span className="text-small">{item.data.label}</span>
@@ -95,7 +92,7 @@ const MovimientoDia = () => {
             (bank) => {
               return (
                 <SelectItem key={bank.value} textValue={bank.label}>
-                  <div className="flex gap-2 items-center">
+                  <div className="flex gap-2 items-center" aria-label={bank.label}>
                     <Avatar src={bank.img} alt={bank.label} className="w-8 h-8" />
                     <div className='flex flex-col'>
                       <span className="text-small">{bank.label}</span>
