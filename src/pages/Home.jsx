@@ -42,7 +42,7 @@ const Home = () => {
                 showAnchorIcon
                 href="https://github.com/nextui-org/nextui"
               >
-                Visit source code on GitHub.
+                Visit source code on GitHub.  
               </Link>
             </CardFooter>
           </Card>

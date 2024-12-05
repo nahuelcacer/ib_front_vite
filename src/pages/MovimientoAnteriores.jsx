@@ -1,17 +1,29 @@
-import { Avatar, DateRangePicker, Input, Select, SelectItem } from '@nextui-org/react'
-import React, { useState } from 'react'
+import { Avatar, Button, Chip, DatePicker, DateRangePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import React, { useMemo, useState } from 'react'
 import { formatDate } from '../utils/formatter'
 import { getMovimientosAnteriores } from '../service/service.movanterior'
+import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
+import { formatArs } from '../utils/formatter'
+
 
 const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, client_id, token_ib }) => {
   const [desde, setDesde] = useState(null)
   const [hasta, setHasta] = useState(null)
   const [selectedBank, setSelectedBank] = useState(null)
+  const [movimientos, setMovimientos] = useState(null)
+  const [gral, setGral] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
 
   const handleSelectBank = (e) => {
+    
     const bank = banks.find(bank => bank.value === e.target.value)
     setSelectedBank(bank)
     handleGetMovimientos()
+      .finally(() => {
+        setPage(1)
+        setLoading(false)
+      })
   }
   // const { account_number**, bank_code**, customer_id**, account_type**, token_ib**, client_id**, desde**, hasta** } = req.body;
 
@@ -27,7 +39,19 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
       account_type: selectedBank.account_type
     })
     console.log(response)
+    setMovimientos(response.movements_detail)
+    setGral(response.general_data)
   } 
+
+  const rowsPerPage = 8;
+  const pages = Math.ceil(movimientos ? gral.total_rows / rowsPerPage : 1)
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const data = movimientos?.slice(start, end)
+    return data
+  }, [page, movimientos])
+
   return (
     <div className='flex flex-col gap-2'>
       <div className='grid grid-cols-[2fr_1fr_1fr_1fr] gap-2 py-2'>
@@ -82,7 +106,7 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
         <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda'/>
 
       </div>
-      {/* <div>
+      <div>
         <Table
           aria-label='Tabla de movimientos del dia'
           removeWrapper
@@ -143,10 +167,10 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
                     </div>
                   </TableCell>
                   <TableCell>{mov.id}</TableCell>
-                  <TableCell>{mov.code_description_ib}</TableCell>
-                  <TableCell>{mov.code_description_bank}</TableCell>
+                  <TableCell><span className='line-clamp-1'>{mov.code_description_ib}</span></TableCell>
+                  <TableCell><span className='line-clamp-1'>{mov.code_description_bank}</span>  </TableCell>
                   <TableCell>{mov.customer_cuit || ""}</TableCell>
-                  <TableCell>{mov.depositor_description || ""}</TableCell>
+                  <TableCell><span className='line-clamp-1'>{mov.depositor_description || ""}</span></TableCell>
                   <TableCell>
                     {mov.debit_credit_type === "D" ?
                       <div className='flex items-center gap-2'>
@@ -174,7 +198,8 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
               )
             })}
           </TableBody>
-        </Table> */}
+        </Table>
+      </div>
       {/* <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setReceiptData({ ...receiptData, description: '', user_id: '', transfer_id: '', fecha_recibo: '' })}>
           <ModalContent>
             <ModalHeader >Recibo</ModalHeader>
