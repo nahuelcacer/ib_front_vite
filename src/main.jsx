@@ -10,6 +10,7 @@ import ErrorPage from './pages/ErrorPage'
 import MainLayout from './layouts/MainLayout'
 import { NextUIProvider } from '@nextui-org/react'
 import Movimientos from './pages/Movimientos'
+import ProfileProvider from './context/ProfileContext'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
@@ -22,7 +23,7 @@ const App = () => {
           <Route path="register" element={!token ? <Register /> : <Navigate to="/" />} />
         </Route>
 
-        <Route path="/" element={token ? <MainLayout /> : <Navigate to="/auth/login" />} >
+        <Route path="/" element={token ? <ProfileProvider><MainLayout /></ProfileProvider> : <Navigate to="/auth/login" />} >
           <Route path="/" element={<Home />} />
           <Route path="/movimientos" element={<Movimientos />} />
         </Route>
@@ -37,7 +38,6 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <NextUIProvider>
       <main >
-
         <App />
       </main>
     </NextUIProvider>

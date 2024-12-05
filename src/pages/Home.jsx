@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getSaldos } from "../service/service.saldos";
 import { formatArs } from "../utils/formatter";
-import { Card, CardBody, CardFooter, CardHeader, Divider, Image } from "@nextui-org/react";
+import { Avatar, Card, CardBody, CardFooter, CardHeader, Divider, Image } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
@@ -12,42 +12,39 @@ const Home = () => {
     getSaldos(formattedDate, formattedDate, setSaldos);
   }, []);
   return (
-    <div className="text-2xl font-bold flex gap-10">
-      {saldos?.accounts.map((cuenta) => {
-        return (
-          <Card className="max-w-[400px]">
-            <CardHeader className="flex gap-3">
-              <Image
-                alt="nextui logo"
-                height={40}
-                radius="sm"
-                src="https://sib1.interbanking.com.ar/skins/bancos/branding/v2/logo011.png"
-                width={40}
-              />
-              <div className="flex flex-col">
-                <p className="text-md">NextUI</p>
-                <p className="text-small text-default-500">nextui.org</p>
-              </div>
-            </CardHeader>
-            <Divider/>
-            <CardBody>
-              <p>
-                Make beautiful websites regardless of your design experience.
+    <div className="flex gap-4 flex-wrap">
+      {saldos?.map((cuenta) => (
+        <Card
+          key={cuenta.id}
+          className="w-[350px] hover:shadow-lg transition-shadow"
+          shadow="sm"
+        >
+          <CardHeader className="flex gap-4 items-center">
+            <Avatar
+              alt="Logo del banco"
+              name="tota"
+              src={cuenta.bank_number === "001" ? "" : `https://sib1.interbanking.com.ar/skins/bancos/branding/v2/logo${cuenta.bank_number}.png`}
+            />
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold">{cuenta.account_label}</p>
+              <p className="text-sm text-default-500">{cuenta.account_number}</p>
+            </div>
+          </CardHeader>
+
+          <CardBody className="py-5">
+            <div className="space-y-3">
+              <p className="text-sm text-default-500">Saldo Disponible</p>
+              <p className="text-3xl font-bold text-primary">
+                {formatArs.format(cuenta.balances.current_operating_balance)}
               </p>
-            </CardBody>
-            <Divider />
-            <CardFooter>
-              <Link
-                isExternal
-                showAnchorIcon
-                href="https://github.com/nextui-org/nextui"
-              >
-                Visit source code on GitHub.  
-              </Link>
-            </CardFooter>
-          </Card>
-        );
-      })}
+            </div>
+          </CardBody>
+
+          <CardFooter className="flex justify-between items-center">
+
+          </CardFooter>
+        </Card>
+      ))}
     </div>
   );
 };

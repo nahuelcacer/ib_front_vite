@@ -9,39 +9,34 @@ import { formatArs } from '../utils/formatter'
 const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, client_id, token_ib }) => {
   const [desde, setDesde] = useState(null)
   const [hasta, setHasta] = useState(null)
-  const [selectedBank, setSelectedBank] = useState(null)
   const [movimientos, setMovimientos] = useState(null)
   const [gral, setGral] = useState(null)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
 
-  const handleSelectBank = (e) => {
-    
-    const bank = banks.find(bank => bank.value === e.target.value)
-    setSelectedBank(bank)
-    handleGetMovimientos()
-      .finally(() => {
-        setPage(1)
-        setLoading(false)
-      })
-  }
-  // const { account_number**, bank_code**, customer_id**, account_type**, token_ib**, client_id**, desde**, hasta** } = req.body;
 
-  const handleGetMovimientos = async () => {
-    const response = await getMovimientosAnteriores({ 
-      desde, 
-      hasta, 
-      customer_id, 
-      client_id, 
-      token_ib:token_ib.access_token,
-      account_number: selectedBank.account_number,
-      bank_code: selectedBank.bank_number,
-      account_type: selectedBank.account_type
-    })
-    console.log(response)
-    setMovimientos(response.movements_detail)
-    setGral(response.general_data)
-  } 
+  const handleSelectBank = async (e) => {
+    try {
+      setLoading(true)
+      const bank = banks.find(bank => bank.value === e.target.value)
+      const response = await getMovimientosAnteriores({
+        desde,
+        hasta,
+        customer_id,
+        client_id,
+        token_ib: token_ib.access_token,
+        account_number: bank.account_number,
+        bank_code: bank.bank_number,
+        account_type: bank.account_type
+      })
+      setMovimientos(response.movements_detail)
+      setGral(response.general_data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const rowsPerPage = 8;
   const pages = Math.ceil(movimientos ? gral.total_rows / rowsPerPage : 1)
@@ -56,8 +51,8 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
     <div className='flex flex-col gap-2'>
       <div className='grid grid-cols-[2fr_1fr_1fr_1fr] gap-2 py-2'>
         <h1 className='text-2xl font-bold text-left'>Movimientos anteriores</h1>
-        <DateRangePicker 
-        size='lg'
+        <DateRangePicker
+          size='lg'
           onChange={(e) => {
             setDesde(formatDate(e.start))
             setHasta(formatDate(e.end))
@@ -103,7 +98,7 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda'/>
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' />
 
       </div>
       <div>

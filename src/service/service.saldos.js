@@ -8,6 +8,7 @@ export const getSaldos = async (desde, hasta, setter) => {
     const accounts_number = accounts.map((acc) => acc.account_number);
     const bank_code = accounts.map((acc) => acc.bank_number);
     const account_type = accounts.map((acc) => acc.account_type);
+    console.log(accounts_number, bank_code, account_type)
 
     const response = await axios.get(`${import.meta.env.VITE_API_URL}saldos/`, {
       params: {
@@ -16,6 +17,7 @@ export const getSaldos = async (desde, hasta, setter) => {
         account_type, // Convertir el array a JSON
         desde,
         hasta,
+
       }, // Pasar los parámetros directamente
       headers: {
         "Content-Type": "application/json",

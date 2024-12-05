@@ -59,3 +59,14 @@
   }
 }
 
+.bg-grid-pattern {
+  background-color: #1a1a1a;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(128, 128, 128, 0.1) 0,
+    rgba(128, 128, 128, 0.1) 1px,
+    transparent 0,
+    transparent 50%
+  );
+  background-size: 30px 30px;
+}
