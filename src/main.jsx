@@ -11,8 +11,7 @@ import MainLayout from './layouts/MainLayout'
 import { NextUIProvider } from '@nextui-org/react'
 import Movimientos from './pages/Movimientos'
 import ProfileProvider from './context/ProfileContext'
-import CrearSueldo from './pages/sueldos/CrearSueldo'
-import Sueldos from './pages/sueldos/Sueldos'
+import CrearPersonal from './pages/sueldos/CrearPersonal'
 import Administracion from './pages/administracion/Administracion'
 
 const App = () => {
@@ -30,8 +29,8 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/administracion" element={<Administracion />} />
           <Route path="/movimientos" element={<Movimientos />} />
-          <Route path="/sueldos" element={<Sueldos/>} />
-          <Route path="/sueldos/create" element={<CrearSueldo/>} />
+          {/* <Route path="/sueldos" element={<Sueldos/>} /> */}
+          <Route path="/personal/crear" element={<CrearPersonal/>} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

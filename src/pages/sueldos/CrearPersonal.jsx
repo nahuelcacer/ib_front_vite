@@ -1,6 +1,7 @@
 import { Button, Checkbox, DatePicker, Divider, Input, Select, SelectItem } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { registerPersonal } from "../../service/service.personal";
+import { getBancos } from "../../service/service.bancos";
 
 const estadosPersonal = [{
     label: "Activo", value: true
@@ -15,8 +16,18 @@ const tipoCuenta = [
     { label: "Cuenta corriente", value: "CC" },
     { label: "Cuenta de ahorro", value: "CA" },
 ]
+
 const CrearSueldo = () => {
     const [errors, setErrors] = useState(null)
+    const [bancos, setBancos] = useState([])
+
+    useEffect(() => {
+        const fetchBancos = async () => {
+            const response = await getBancos()
+            setBancos(response)
+        }
+        fetchBancos()
+    }, [])
     const validate = (data) => {
         const errors = {};
         if (!data.nombre || data.nombre.trim() === "") {
@@ -145,9 +156,13 @@ const CrearSueldo = () => {
                 </div>
                 {/* <Divider></Divider> */}
                 {/* <h4 className="text-medium font-medium">Datos bancarios</h4> */}
-                {/* <Select label="Selecciona banco" name="banco" errorMessage={errors?.banco?.message} isInvalid={errors?.banco?.isInvalid} onChange={(e) => setErrors({ ...errors, banco: null })} >
-                    <SelectItem value="044">BANCO HIPOTECARIO</SelectItem>
-                </Select> */}
+                <Select label="Selecciona banco" name="banco_id" errorMessage={errors?.banco?.message} isInvalid={errors?.banco?.isInvalid} onChange={(e) => setErrors({ ...errors, banco: null })} >
+                    {bancos.map((banco) => {
+                        return (
+                            <SelectItem key={parseInt(banco.id)} value={parseInt(banco.id)}>{banco.nombre}</SelectItem>
+                        )
+                    })}     
+                </Select>
                 <div className="flex gap-4">
                     <Select label="Selecciona banco" name="tipo_cuenta" errorMessage={errors?.tipo_cuenta?.message} isInvalid={errors?.tipo_cuenta?.isInvalid} onChange={(e) => setErrors({ ...errors, tipo_cuenta: null })} >
                         {tipoCuenta.map((tipoCuenta, index) => {

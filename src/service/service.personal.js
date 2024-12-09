@@ -8,3 +8,8 @@ export const registerPersonal = async (data) => {
     })
     return response.json()
   }   
+
+export const getPersonal = async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}personal`)
+    return response.json()
+}
