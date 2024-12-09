@@ -97,7 +97,7 @@ const CrearSueldo = () => {
 
         return errors;
     };
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.currentTarget));
         const validationErrors = validate(data);
@@ -145,16 +145,19 @@ const CrearSueldo = () => {
                 </div>
                 {/* <Divider></Divider> */}
                 {/* <h4 className="text-medium font-medium">Datos bancarios</h4> */}
-                <Input label="Numero de cuenta" name="numero_cuenta" errorMessage={errors?.numero_cuenta?.message} isInvalid={errors?.numero_cuenta?.isInvalid} onChange={(e) => setErrors({ ...errors, numero_cuenta: null })}></Input>
+                {/* <Select label="Selecciona banco" name="banco" errorMessage={errors?.banco?.message} isInvalid={errors?.banco?.isInvalid} onChange={(e) => setErrors({ ...errors, banco: null })} >
+                    <SelectItem value="044">BANCO HIPOTECARIO</SelectItem>
+                </Select> */}
                 <div className="flex gap-4">
                     <Select label="Selecciona banco" name="tipo_cuenta" errorMessage={errors?.tipo_cuenta?.message} isInvalid={errors?.tipo_cuenta?.isInvalid} onChange={(e) => setErrors({ ...errors, tipo_cuenta: null })} >
                         {tipoCuenta.map((tipoCuenta, index) => {
                             return (
                                 <SelectItem key={tipoCuenta.value} value={tipoCuenta.value}>{tipoCuenta.label}</SelectItem>
-                            )   
+                            )
                         })}
                     </Select>
                 </div>
+                <Input label="Numero de cuenta" name="numero_cuenta" errorMessage={errors?.numero_cuenta?.message} isInvalid={errors?.numero_cuenta?.isInvalid} onChange={(e) => setErrors({ ...errors, numero_cuenta: null })}></Input>
                 <Button type="submit">Guardar</Button>
             </form>
         </div>

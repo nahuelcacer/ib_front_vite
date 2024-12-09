@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Sidebar, { SidebarItem } from '../components/Sidebar'
-import { ArrowLeftRight, Briefcase, ContactRound, Home } from 'lucide-react'
+import { ArrowLeftRight, Briefcase, ContactRound, Home, Settings } from 'lucide-react'
 import { ProfileContext } from '../context/ProfileContext'
 import { Outlet } from 'react-router-dom'
 import { getInstitutions } from '../service/service.instituions'
@@ -42,6 +42,7 @@ const MainLayout = () => {
       </div>
       <Sidebar>
         <SidebarItem to="/" icon={<Home size={20} />} text="Inicio" />
+        <SidebarItem to="/administracion" icon={<Settings size={20} />} text="Administracion" />
         <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
         <SidebarItem to="/sueldos" icon={<Briefcase size={20} />} text="Sueldos" />
 
