@@ -11,7 +11,8 @@ import MainLayout from './layouts/MainLayout'
 import { NextUIProvider } from '@nextui-org/react'
 import Movimientos from './pages/Movimientos'
 import ProfileProvider from './context/ProfileContext'
-import Sueldos from './pages/Sueldos'
+import CrearSueldo from './pages/sueldos/CrearSueldo'
+import Sueldos from './pages/sueldos/Sueldos'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
@@ -27,7 +28,8 @@ const App = () => {
         <Route path="/" element={token ? <ProfileProvider><MainLayout /></ProfileProvider> : <Navigate to="/auth/login" />} >
           <Route path="/" element={<Home />} />
           <Route path="/movimientos" element={<Movimientos />} />
-          <Route path="/sueldos" element={<Sueldos />} />
+          <Route path="/sueldos" element={<Sueldos/>} />
+          <Route path="/sueldos/create" element={<CrearSueldo/>} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
