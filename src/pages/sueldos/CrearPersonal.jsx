@@ -1,7 +1,8 @@
 import { Button, Checkbox, DatePicker, Divider, Input, Select, SelectItem } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { registerPersonal } from "../../service/service.personal";
 import { getBancos } from "../../service/service.bancos";
+import { ProfileContext } from "../../context/ProfileContext";
 
 const estadosPersonal = [{
     label: "Activo", value: true
@@ -20,6 +21,7 @@ const tipoCuenta = [
 const CrearSueldo = () => {
     const [errors, setErrors] = useState(null)
     const [bancos, setBancos] = useState([])
+    const { institution_id } = useContext(ProfileContext)
 
     useEffect(() => {
         const fetchBancos = async () => {
@@ -123,6 +125,7 @@ const CrearSueldo = () => {
     return (
         <div className="w-[400px]">
             <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+                <input label="Institucion" name="institution_id" value={parseInt(institution_id)} hidden></input>
                 <Input label="Nombre" name="nombre" errorMessage={errors?.nombre?.message} isInvalid={errors?.nombre?.isInvalid} onChange={(e) => setErrors({ ...errors, nombre: null })}></Input>
                 <Input label="Dni" name="dni" errorMessage={errors?.dni?.message} isInvalid={errors?.dni?.isInvalid} onChange={(e) => setErrors({ ...errors, dni: null })}></Input>
                 <div className="flex gap-4">

@@ -3,14 +3,10 @@ import { getPersonal } from '../../service/service.personal'
 import { Avatar, Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, User } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 
-const Personal = () => {
+const Personal = ({ institution_id }) => {
   const [personal, setPersonal] = useState([])
   useEffect(() => {
-    const fetchPersonal = async () => {
-      const response = await getPersonal()
-      setPersonal(response)
-    }
-    fetchPersonal()
+    getPersonal(institution_id, setPersonal)
   }, [])
   return (
     <div>
@@ -22,15 +18,17 @@ const Personal = () => {
           </Link>
         </div>
       }
-      shadow='sm'>
+        shadow='sm'>
         <TableHeader>
           <TableColumn>Personal</TableColumn>
           <TableColumn>Fecha de Nacimiento</TableColumn>
+          <TableColumn>Fecha de Ingreso</TableColumn>
         </TableHeader>
         <TableBody>
-          {personal.map((item) => {
+          {personal?.map((item) => {
             const fechaNacimiento = item.DatosPersonale.fecha_nacimiento.split('T')[0]
             const fechaNacimientoFormateada = fechaNacimiento.split('-').reverse().join('/')
+            const fechaIngreso = item.ingreso.split('T')[0].split('-').reverse().join('/')
 
             return (
               <TableRow key={item.id}>
@@ -47,6 +45,12 @@ const Personal = () => {
                   <div className='flex flex-col gap-2'>
                     <p className='font-semibold'>{fechaNacimientoFormateada}</p>
                     <p className='text-sm text-gray-500'>{item.edad || ''} años</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className='flex flex-col gap-2'>
+                    <p className='font-semibold'>{fechaIngreso}</p>
+                    <p className='text-sm text-gray-500'>{item.antiguedad || ''} años</p>
                   </div>
                 </TableCell>
               </TableRow>
