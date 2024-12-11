@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getPersonal } from '../../service/service.personal'
+import { deletePersonal, getPersonal } from '../../service/service.personal'
 import { Avatar, Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, User } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 
@@ -8,6 +8,10 @@ const Personal = ({ institution_id }) => {
   useEffect(() => {
     getPersonal(institution_id, setPersonal)
   }, [])
+  const handleDelete = async (id) => {
+    const response = await deletePersonal(id)
+    console.log(response)
+  }
   return (
     <div>
 
@@ -23,6 +27,7 @@ const Personal = ({ institution_id }) => {
           <TableColumn>Personal</TableColumn>
           <TableColumn>Fecha de Nacimiento</TableColumn>
           <TableColumn>Fecha de Ingreso</TableColumn>
+          <TableColumn>Acciones</TableColumn>
         </TableHeader>
         <TableBody>
           {personal?.map((item) => {
@@ -51,6 +56,14 @@ const Personal = ({ institution_id }) => {
                   <div className='flex flex-col gap-2'>
                     <p className='font-semibold'>{fechaIngreso}</p>
                     <p className='text-sm text-gray-500'>{item.antiguedad || ''} años</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className='flex items-center gap-2'>
+                    <Link to={`/personal/${item.id}`}>
+                      <Button color='primary' size='sm'>Editar</Button>
+                    </Link>
+                    <Button color='danger' size='sm' onClick={() => handleDelete(item.id)}>Eliminar</Button>
                   </div>
                 </TableCell>
               </TableRow>

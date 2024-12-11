@@ -12,8 +12,44 @@ const Home = () => {
     getSaldos(formattedDate, formattedDate, setSaldos);
   }, []);
   return (
-    <div className="flex gap-4 flex-wrap">
-      {saldos?.map((cuenta) => (
+    <div>
+      {/* <h1 className="text-2xl font-semibold text-left">Inicio</h1> */}
+      <div className="flex gap-4 flex-wrap w-[80%]">
+        <div className="flex flex-col w-full rounded-lg p-4 shadow-lg text-left">
+      <div className="text-left">
+
+        <h1 className="text-2xl font-semibold">Saldos</h1>
+        <p className="text-sm text-default-500 pb-">Saldo disponible al dia</p>
+      </div>
+
+          {saldos?.map((cuenta, index) => (
+            <div key={index} className="p-2">
+              <div className="flex justify-between">
+                <div className="flex gap-2 items-center">
+                  <Avatar
+                    alt="Logo del banco"
+                    name="tota"
+                    src={cuenta.bank_number === "001" ? "" : `https://sib1.interbanking.com.ar/skins/bancos/branding/v2/logo${cuenta.bank_number}.png`}
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-lg font-semibold">{cuenta.account_label}</p>
+                    <p className="text-sm text-default-500">{cuenta.account_number}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-bold text-primary">{formatArs.format(cuenta.balances.current_operating_balance)}</p>
+                </div>
+              </div>
+
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col w-full rounded-lg p-4 shadow-lg text-left">
+          <h1 className="text-2xl font-semibold text-left">Movimientos</h1>
+          <p className="text-sm text-default-500 pb-">Movimientos de las cuentas</p>
+        </div>
+      </div>
+      {/* {saldos?.map((cuenta) => (
         <Card
           key={cuenta.id}
           className="w-[350px] hover:shadow-lg transition-shadow"
@@ -44,7 +80,7 @@ const Home = () => {
 
           </CardFooter>
         </Card>
-      ))}
+      ))} */}
     </div>
   );
 };

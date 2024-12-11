@@ -4,10 +4,10 @@ import { registerPersonal } from "../../service/service.personal";
 import { getBancos } from "../../service/service.bancos";
 import { ProfileContext } from "../../context/ProfileContext";
 
-const estadosPersonal = [{
-    label: "Activo", value: true
+export const estadosPersonal = [{
+    key:1,label: "Activo", value: true
 }, {
-    label: "Inactivo", value: false
+    key:2,label: "Inactivo", value: false
 }]
 const sexoPersonal = [
     { label: "Hombre", value: "masculino" },

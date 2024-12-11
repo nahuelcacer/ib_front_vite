@@ -26,3 +26,29 @@ export const getPersonal = async (q, setter) => {
   setter(data)
   return data
 }
+
+export const getPersonalById = async (id, setter) => {
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}personal/${id}`)
+  const data = response.data
+  setter(data)
+  return data
+} 
+
+
+export const updatePersonal = async (id, data) => {
+  try {
+    const response = await axios.put(`${import.meta.env.VITE_API_URL}personal/${id}`, data)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const deletePersonal = async (id) => {
+  try { 
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}personal/${id}`)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}

@@ -13,6 +13,7 @@ import Movimientos from './pages/Movimientos'
 import ProfileProvider from './context/ProfileContext'
 import CrearPersonal from './pages/sueldos/CrearPersonal'
 import Administracion from './pages/administracion/Administracion'
+import EditarPersonal from './pages/administracion/EditarPersonal'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/movimientos" element={<Movimientos />} />
           {/* <Route path="/sueldos" element={<Sueldos/>} /> */}
           <Route path="/personal/crear" element={<CrearPersonal/>} />
+          <Route path="/personal/:id" element={<EditarPersonal/>} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
