@@ -4,6 +4,31 @@ import { formatArs } from "../utils/formatter";
 import { Avatar, Card, CardBody, CardFooter, CardHeader, Divider, Image } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
+const CardBancos = ({ cuenta }) => {
+  return (
+    <div className="flex w-full border rounded-lg p-4 justify-between">
+      <div className="flex items-center gap-2">
+
+        <div className="">
+          <Avatar
+            alt="Logo del banco"
+            name="tota"
+            src={cuenta.bank_number === "001" ? "" : `https://sib1.interbanking.com.ar/skins/bancos/branding/v2/logo${cuenta.bank_number}.png`}
+          />
+        </div>
+        <div className="flex flex-col items-start">
+          <p className="text-lg font-semibold">{cuenta.account_label}</p>
+          <p className="text-sm text-default-500">{cuenta.account_number}</p>
+        </div>
+      </div>
+      <div className="place-items-center text-center">
+        <span className="text-lg font-bold text-primary">
+          {formatArs.format(cuenta.balances.current_operating_balance)}
+        </span>
+      </div>
+    </div>
+  )
+}
 const Home = () => {
   const [saldos, setSaldos] = useState(null);
   useEffect(() => {
@@ -13,43 +38,22 @@ const Home = () => {
   }, []);
   return (
     <div>
-      {/* <h1 className="text-2xl font-semibold text-left">Inicio</h1> */}
-      <div className="flex gap-4 flex-wrap w-[80%]">
-        <div className="flex flex-col w-full rounded-lg p-4 shadow-lg text-left">
       <div className="text-left">
-
-        <h1 className="text-2xl font-semibold">Saldos</h1>
-        <p className="text-sm text-default-500 pb-">Saldo disponible al dia</p>
+        <h1 className="text-2xl font-bold">Saldos</h1>
+        <span className="text-sm text-default-500">Saldos disponibles del dia</span>
       </div>
-
-          {saldos?.map((cuenta, index) => (
-            <div key={index} className="p-2">
-              <div className="flex justify-between">
-                <div className="flex gap-2 items-center">
-                  <Avatar
-                    alt="Logo del banco"
-                    name="tota"
-                    src={cuenta.bank_number === "001" ? "" : `https://sib1.interbanking.com.ar/skins/bancos/branding/v2/logo${cuenta.bank_number}.png`}
-                  />
-                  <div className="flex flex-col">
-                    <p className="text-lg font-semibold">{cuenta.account_label}</p>
-                    <p className="text-sm text-default-500">{cuenta.account_number}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold text-primary">{formatArs.format(cuenta.balances.current_operating_balance)}</p>
-                </div>
-              </div>
-
-            </div>
+      <div className="gap-2">
+        <div className="flex flex-col gap-2">
+          {saldos?.map((cuenta) => (
+            <CardBancos cuenta={cuenta} />
           ))}
         </div>
-        <div className="flex flex-col w-full rounded-lg p-4 shadow-lg text-left">
-          <h1 className="text-2xl font-semibold text-left">Movimientos</h1>
-          <p className="text-sm text-default-500 pb-">Movimientos de las cuentas</p>
-        </div>
       </div>
-      {/* {saldos?.map((cuenta) => (
+    </div>
+  )
+  {/*
+      <div>
+       {saldos?.map((cuenta) => (
         <Card
           key={cuenta.id}
           className="w-[350px] hover:shadow-lg transition-shadow"
@@ -80,9 +84,9 @@ const Home = () => {
 
           </CardFooter>
         </Card>
-      ))} */}
-    </div>
-  );
+      ))} 
+    </div>*/}
+  // );
 };
 
 export default Home;
