@@ -38,7 +38,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <div className="text-left">
+      <div className="text-left p-2">
         <h1 className="text-2xl font-bold">Saldos</h1>
         <span className="text-sm text-default-500">Saldos disponibles del dia</span>
       </div>
@@ -47,6 +47,12 @@ const Home = () => {
           {saldos?.map((cuenta) => (
             <CardBancos cuenta={cuenta} />
           ))}
+        </div>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">Transacciones</h1>
+          <span className="text-sm text-default-500">Transacciones del dia</span>
         </div>
       </div>
     </div>
