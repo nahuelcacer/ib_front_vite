@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getSaldos } from "../service/service.saldos";
 import { formatArs } from "../utils/formatter";
-import { Avatar, Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Avatar, Button, Input, Select, SelectItem, Table, TableBody, TableHeader, TableRow } from "@nextui-org/react";
 import { ProfileContext } from "../context/ProfileContext";
 import adapterMovdia from "../adapters/adapter.movdia";
 
@@ -60,7 +60,9 @@ const Home = () => {
           <span className="text-sm text-default-500">Movimientos del dia</span>
         </div>
         <div className="flex flex-row gap-4">
-          <div className="rounded-lg border flex-grow-[4]">s</div>
+          <div className="rounded-lg border flex-grow-[4]">
+            ACA VAN LOS MOVIMIENTOS
+          </div>
           <div className="rounded-lg border flex-grow-[1]">
             <div className="flex flex-col gap-2 p-2">
               <h1 className="text-2xl font-bold">Crear movimiento</h1>
