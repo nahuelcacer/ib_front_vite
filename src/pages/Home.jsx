@@ -4,6 +4,7 @@ import { formatArs } from "../utils/formatter";
 import { Avatar, Button, Input, Select, SelectItem, Table, TableBody, TableHeader, TableRow } from "@nextui-org/react";
 import { ProfileContext } from "../context/ProfileContext";
 import adapterMovdia from "../adapters/adapter.movdia";
+import { createMovement } from "../service/service.movements";
 
 const CardBancos = ({ cuenta }) => {
   return (
@@ -32,10 +33,21 @@ const CardBancos = ({ cuenta }) => {
 }
 const Home = () => {
   const [saldos, setSaldos] = useState(null);
-  const { accounts } = useContext(ProfileContext)
+  const { accounts, institution_id } = useContext(ProfileContext)
   const [banks, setBanks] = useState(accounts.map(
     account => adapterMovdia(account)
   ))
+  const [movement, setMovement] = useState({institution_id, fecha_movimiento:new Date().toISOString().split('T')[0]})
+
+  const handleChange = (e) => {
+    console.log("este es el change", e.target.value)
+    const { name , value} = e.target
+    setMovement({
+      ...movement, [name]:value
+    })
+  }
+
+ 
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
@@ -68,34 +80,46 @@ const Home = () => {
               <h1 className="text-2xl font-bold">Crear movimiento</h1>
               <span className="text-sm text-default-500">Crea un nuevo movimiento</span>
               <Select
-                
+                aria-label='Selecciona un banco'
                 items={banks}
+                name="bank_id"
+                // label='Selecciona un banco' 
+                placeholder='Selecciona un banco'
+                onChange={handleChange}
                 renderValue={(items) => {
                   return items.map((item) => {
-                    return <div className="flex gap-2 items-center" aria-label={item.label}>
-                      <Avatar src={item.img} alt={item.label} className="w-8 h-8" />
-                      <div className='flex flex-col'>
-                        <span className="text-small">{item.label}</span>
-                        <span className="text-tiny text-default-400">{item.value}</span>
+                    return (
+                      <div className="flex gap-2 items-center">
+                        <Avatar src={item.data.img} alt={item.data.label} className="w-8 h-8" />
+                        <div className='flex flex-col'>
+                          <span className="text-small">{item.data.label}</span>
+                          <span className="text-tiny text-default-400">{item.data.value}</span>
+                        </div>
                       </div>
-                    </div>
+                    )
                   })
                 }}
+                size='lg'
               >
-                {banks.map((bank) => (
-                  <SelectItem >
-                    <div className="flex gap-2 items-center" aria-label={bank.label}>
-                      <Avatar src={bank.img} alt={bank.label} className="w-8 h-8" />
-                      <div className='flex flex-col'>
-                        <span className="text-small">{bank.label}</span>
-                        <span className="text-tiny text-default-400">{bank.value}</span>
-                      </div>
-                    </div></SelectItem>
-                ))}
+                {
+                  (bank) => {
+                    return (
+                      <SelectItem key={bank.value} textValue={bank.label}>
+                        <div className="flex gap-2 items-center">
+                          <Avatar src={bank.img} alt={bank.label} className="w-8 h-8" />
+                          <div className='flex flex-col'>
+                            <span className="text-small">{bank.label}</span>
+                            <span className="text-tiny text-default-400">{bank.value}</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    )
+                  }
+                }
               </Select>
-              <Input placeholder="Descripción" />
-              <Input placeholder="Monto" />
-              <Button>Crear</Button>
+              <Input placeholder="Descripción" name="description" onChange={handleChange}/>
+              <Input placeholder="Monto" name="amount" onChange={handleChange}/>
+              <Button color="primary" onClick={() => {createMovement(movement)}}>Crear</Button>
             </div>
           </div>
         </div>
