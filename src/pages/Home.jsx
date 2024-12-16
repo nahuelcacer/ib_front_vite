@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getSaldos } from "../service/service.saldos";
 import { formatArs } from "../utils/formatter";
-import { Avatar, Button, Input, Select, SelectItem, Table, TableBody, TableHeader, TableRow } from "@nextui-org/react";
+import { Avatar, Button, DatePicker, Input, Select, SelectItem, Table, TableBody, TableHeader, TableRow } from "@nextui-org/react";
 import { ProfileContext } from "../context/ProfileContext";
 import adapterMovdia from "../adapters/adapter.movdia";
-import { createMovement } from "../service/service.movements";
+import { createMovement, getMovementByDate } from "../service/service.movements";
+import { getLocalTimeZone, now } from "@internationalized/date";
 
-const CardBancos = ({ cuenta }) => {
+
+const movement_type = [{label:"Egreso"}, {label:"Ingreso"}]
+const CardBancos = ({ cuenta, index }) => {
   return (
     <div className="flex w-full border rounded-lg p-4 justify-between">
       <div className="flex items-center gap-2">
@@ -37,22 +40,27 @@ const Home = () => {
   const [banks, setBanks] = useState(accounts.map(
     account => adapterMovdia(account)
   ))
-  const [movement, setMovement] = useState({institution_id, fecha_movimiento:new Date().toISOString().split('T')[0]})
-
+  const [movement, setMovement] = useState({ institution_id, fecha_movimiento: new Date().toISOString().split('T')[0] })
+  const [fechaMovimientos, setFechaMovimientos] = useState(new Date().toISOString().split("T")[0])
+  const [searchedMovement, setSearchedMovement] = useState(null)
   const handleChange = (e) => {
     console.log("este es el change", e.target.value)
-    const { name , value} = e.target
+    const { name, value } = e.target
     setMovement({
-      ...movement, [name]:value
+      ...movement, [name]: value
     })
   }
 
- 
+
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
     getSaldos(formattedDate, formattedDate, setSaldos);
+    setFechaMovimientos(formattedDate)
   }, []);
+  useEffect(() => {
+    getMovementByDate(fechaMovimientos, setSearchedMovement)
+  }, [fechaMovimientos])
   return (
     <div>
       <div className="text-left py-2">
@@ -61,8 +69,10 @@ const Home = () => {
       </div>
       <div className="gap-2">
         <div className="flex flex-col gap-2">
-          {saldos?.map((cuenta) => (
-            <CardBancos cuenta={cuenta} />
+          {saldos?.map((cuenta, index) => (
+            <div key={index}>
+              <CardBancos cuenta={cuenta} />
+            </div>
           ))}
         </div>
       </div>
@@ -73,7 +83,14 @@ const Home = () => {
         </div>
         <div className="flex flex-row gap-4">
           <div className="rounded-lg border flex-grow-[4]">
-            ACA VAN LOS MOVIMIENTOS
+            <div className="w-60 m-2">
+              <DatePicker onChange={(e)=>{setFechaMovimientos(e)}}></DatePicker>
+            </div>
+            <div>
+              {searchedMovement?.map((mov, index) => (
+                <div>{mov.description}- {mov.amount}</div>
+              ))}
+            </div>
           </div>
           <div className="rounded-lg border flex-grow-[1]">
             <div className="flex flex-col gap-2 p-2">
@@ -117,9 +134,16 @@ const Home = () => {
                   }
                 }
               </Select>
-              <Input placeholder="Descripción" name="description" onChange={handleChange}/>
-              <Input placeholder="Monto" name="amount" onChange={handleChange}/>
-              <Button color="primary" onClick={() => {createMovement(movement)}}>Crear</Button>
+              <Input placeholder="Descripción" name="description" onChange={handleChange} />
+              <Input placeholder="Monto" name="amount" onChange={handleChange} />
+              <Select>
+                {movement_type.map((type) => {
+                  return (
+                    <SelectItem>{type.label}</SelectItem>
+                  )
+                })}
+              </Select>
+              <Button color="primary" onClick={() => { createMovement(movement) }}>Crear</Button>
             </div>
           </div>
         </div>
