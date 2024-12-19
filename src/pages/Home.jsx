@@ -6,10 +6,11 @@ import { ProfileContext } from "../context/ProfileContext";
 import adapterMovdia from "../adapters/adapter.movdia";
 import { createMovement, getMovementByDate } from "../service/service.movements";
 import { getLocalTimeZone, now } from "@internationalized/date";
+import { ChartNoAxesCombined } from "lucide-react";
 
 
 const movement_type = [{ label: "Egreso" }, { label: "Ingreso" }]
-const CardBancos = ({ cuenta, index }) => {
+const CardBancos = ({ cuenta, proyeccionSaldo, index }) => {
   return (
     <div className="flex w-full border rounded-lg p-4 justify-between">
       <div className="flex items-center gap-2">
@@ -26,10 +27,29 @@ const CardBancos = ({ cuenta, index }) => {
           <p className="text-sm text-default-500">{cuenta.account_number}</p>
         </div>
       </div>
-      <div className="place-items-center text-center">
+      <div className="place-items-center text-center flex flex-col">
         <span className="text-lg font-bold text-primary">
           {formatArs.format(cuenta.balances.current_operating_balance)}
+          {/* {searchedMovement[cuenta.account_number]} */}
         </span>
+        
+          {proyeccionSaldo ? 
+          proyeccionSaldo > 0 ?
+          <div className="flex items-center gap-2">
+            <ChartNoAxesCombined className="text-default-500" size={16}/>
+            <span className="text-sm text-default-500 font-semibold">
+              {formatArs.format(proyeccionSaldo)}
+            </span>
+          </div>
+          :
+          <div className="flex items-center gap-2">
+            <ChartNoAxesCombined className="text-red-500" size={16}/>
+            <span className="text-sm text-red-500 font-semibold">
+              {formatArs.format(proyeccionSaldo)}
+            </span>
+          </div>
+          : ""}
+
       </div>
     </div>
   )
@@ -72,11 +92,15 @@ const Home = () => {
       </div>
       <div className="gap-2">
         <div className="flex flex-col gap-2">
-          {saldos?.map((cuenta, index) => (
-            <div key={index}>
-              <CardBancos cuenta={cuenta} />
-            </div>
-          ))}
+          {saldos?.map((cuenta, index) => {
+            const movement = searchedMovement ? searchedMovement[cuenta.account_number] : null
+            const proyeccionSaldo = cuenta.balances.current_operating_balance + movement
+            return (
+              <div key={index}>
+                <CardBancos cuenta={cuenta} proyeccionSaldo={proyeccionSaldo} />
+              </div>
+            )
+          })}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -99,7 +123,7 @@ const Home = () => {
                   <TableColumn>Monto</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {searchedMovement?.map((mov, index) => {
+                  {searchedMovement?.movements?.map((mov, index) => {
                     const bank = banks.find(bank => bank.account_number === mov.bank_id)
                     console.log(bank)
                     return (
@@ -172,14 +196,14 @@ const Home = () => {
                   }
                 </Select>
                 <Input placeholder="Descripción" name="description" />
-                <Input placeholder="Monto" name="amount" />
-                <Select name="movement_type">
+                <Select name="movement_type" placeholder="Tipo de movimiento">
                   {movement_type.map((type) => {
                     return (
                       <SelectItem key={type.label} value={type.label}>{type.label}</SelectItem>
                     )
                   })}
                 </Select>
+                <Input placeholder="Monto" name="amount" />
                 <input type="hidden" name="institution_id" value={institution_id} />
                 <input type="hidden" name="fecha_movimiento" value={fechaMovimientos} />
                 <Button color="primary" type="submit">Crear</Button>
