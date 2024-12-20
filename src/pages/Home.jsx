@@ -67,19 +67,17 @@ const Home = () => {
   const [isLoadingDelete, setIsLoadingDelete] = useState({item:"", loading:false})
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    const response = await createMovement(data)
-      .then(() => {
-        getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
-        getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+    try {
+      setIsLoading(true)
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      await createMovement(data)
+      await getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
+      await getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleDeleteMovement = async (id) => {
@@ -152,10 +150,9 @@ const Home = () => {
                   <TableColumn>Monto</TableColumn>
                   <TableColumn>*</TableColumn>
                 </TableHeader>
-                <TableBody>
+                <TableBody emptyContent={"No hay movimientos"} > 
                   {searchedMovement?.movements?.map((mov, index) => {
                     const bank = banks.find(bank => bank.account_number === mov.bank_id)
-                    console.log(bank)
                     return (
                       <TableRow key={index}>
                         <TableCell>
