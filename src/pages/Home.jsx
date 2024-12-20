@@ -64,7 +64,7 @@ const Home = () => {
   const [fechaMovimientos, setFechaMovimientos] = useState(new Date().toISOString().split("T")[0])
   const [searchedMovement, setSearchedMovement] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+  const [isLoadingDelete, setIsLoadingDelete] = useState({item:"", loading:false})
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -82,7 +82,7 @@ const Home = () => {
   }
 
   const handleDeleteMovement = async (id) => {
-    setIsLoadingDelete(true)
+    setIsLoadingDelete({item:id, loading:true})
     const response = await deleteMovement(id)
       .then(() => {
         getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
@@ -91,7 +91,7 @@ const Home = () => {
         console.error(err)
       })
       .finally(() => {
-        setIsLoadingDelete(false)
+        setIsLoadingDelete({item:"", loading:false})
       })
   }
   useEffect(() => {
@@ -174,7 +174,7 @@ const Home = () => {
                           }
                         </TableCell>
                         <TableCell>
-                          <Button isLoading={isLoadingDelete === mov.id} onClick={() => { handleDeleteMovement(mov.id) }} color="primary" type="submit" size="sm" startContent={<Trash2Icon size={16} />} >Eliminar</Button>
+                          <Button isLoading={isLoadingDelete.item === mov.id} onClick={() => { handleDeleteMovement(mov.id) }} color="primary" type="submit" size="sm" startContent={<Trash2Icon size={16} />} >Eliminar</Button>
                         </TableCell>
                       </TableRow>
                     )
