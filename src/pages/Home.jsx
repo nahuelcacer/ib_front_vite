@@ -158,10 +158,10 @@ const Home = () => {
                       <TableRow key={index}>
                         <TableCell>
                           <div className="flex gap-2 items-center">
-                            <Avatar src={bank.img} alt={bank.bank_name} className="w-8 h-8" />
+                            <Avatar src={bank?.img} alt={bank?.bank_name} className="w-8 h-8" />
                             <div className="flex flex-col">
-                              <span className="text-small">{bank.bank_name}</span>
-                              <span className="text-tiny text-default-400">{bank.account_number}</span>
+                              <span className="text-small">{bank?.bank_name}</span>
+                              <span className="text-tiny text-default-400">{bank?.account_number}</span>
                             </div>
                           </div>
                         </TableCell>
@@ -174,7 +174,12 @@ const Home = () => {
                           }
                         </TableCell>
                         <TableCell>
-                          <Button isLoading={isLoadingDelete.item === mov.id} onClick={() => { handleDeleteMovement(mov.id) }} color="primary" type="submit" size="sm" startContent={<Trash2Icon size={16} />} >Eliminar</Button>
+                      <Button isLoading={isLoadingDelete.item === mov.id} 
+                      onClick={() => { handleDeleteMovement(mov.id) }} 
+                      color="primary" 
+                      type="submit" 
+                      size="sm" 
+                      startContent={isLoadingDelete.item === mov.id ? "" :  <Trash2Icon size={16} />} >Eliminar</Button>
                         </TableCell>
                       </TableRow>
                     )
