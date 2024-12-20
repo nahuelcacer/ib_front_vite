@@ -71,6 +71,7 @@ const Home = () => {
     const data = Object.fromEntries(new FormData(e.currentTarget));
     const response = await createMovement(data)
       .then(() => {
+        getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
         getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
       })
       .catch((err) => {
@@ -85,6 +86,7 @@ const Home = () => {
     setIsLoadingDelete({item:id, loading:true})
     const response = await deleteMovement(id)
       .then(() => {
+        getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
         getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
       })
       .catch((err) => {
