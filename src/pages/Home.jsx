@@ -174,7 +174,7 @@ const Home = () => {
                           }
                         </TableCell>
                         <TableCell>
-                          <Button isLoading={isLoadingDelete} onClick={() => { handleDeleteMovement(mov.id) }} color="primary" type="submit" size="sm" startContent={<Trash2Icon size={16} />} >Eliminar</Button>
+                          <Button isLoading={isLoadingDelete === mov.id} onClick={() => { handleDeleteMovement(mov.id) }} color="primary" type="submit" size="sm" startContent={<Trash2Icon size={16} />} >Eliminar</Button>
                         </TableCell>
                       </TableRow>
                     )
