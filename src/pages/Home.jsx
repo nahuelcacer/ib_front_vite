@@ -67,11 +67,18 @@ const Home = () => {
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const data = Object.fromEntries(new FormData(e.currentTarget));
     setIsLoading(true)
+    const data = Object.fromEntries(new FormData(e.currentTarget));
     const response = await createMovement(data)
-    setIsLoading(false)
-    getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
+      .then(() => {
+        getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const handleDeleteMovement = async (id) => {
