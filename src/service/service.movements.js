@@ -26,3 +26,12 @@ export const getMovementByDate = async (fecha,institution_id, setter) => {
         console.error(err)
     }
 }
+
+export const deleteMovement = async (id) => {
+    try {
+        const response = await axios.delete(`${import.meta.env.VITE_API_URL}movement/${id}`)
+        return response.data
+    }catch(err){
+        console.error(err)
+    }
+}       
