@@ -19,7 +19,7 @@ export default defineConfig({
   server:{
     proxy:{
       '/api':{
-        target: 'https://interges-back-1baayx9fn-nahuel-caceres-projects.vercel.app/',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false
       }

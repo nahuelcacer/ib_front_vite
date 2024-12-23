@@ -13,12 +13,11 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
   const [gral, setGral] = useState(null)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
+  const [selectedBank, setSelectedBank] = useState(null)
 
-
-  const handleSelectBank = async (e) => {
+  const obtenerMovimientosySetearValores = async (bank) => {
     try {
       setLoading(true)
-      const bank = banks.find(bank => bank.value === e.target.value)
       const response = await getMovimientosAnteriores({
         desde,
         hasta,
@@ -31,6 +30,23 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
       })
       setMovimientos(response.movements_detail)
       setGral(response.general_data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+  const handleDateChange = (e) => {
+    setDesde(formatDate(e.start))
+    setHasta(formatDate(e.end))
+    obtenerMovimientosySetearValores(selectedBank)
+  }
+  const handleSelectBank = async (e) => {
+    try {
+      setLoading(true)
+      const bank = banks.find(bank => bank.value === e.target.value)
+      setSelectedBank(bank)
+      obtenerMovimientosySetearValores(selectedBank)
     } catch (error) {
       console.log(error)
     } finally {
@@ -53,10 +69,7 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
         <h1 className='text-2xl font-bold text-left'>Movimientos anteriores</h1>
         <DateRangePicker
           size='lg'
-          onChange={(e) => {
-            setDesde(formatDate(e.start))
-            setHasta(formatDate(e.end))
-          }}
+          onChange={handleDateChange}
           aria-label='Selecciona un rango de fechas'
         >
 
