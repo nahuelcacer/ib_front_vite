@@ -15,5 +15,14 @@ import react from '@vitejs/plugin-react'
 //   }
 // })
 export default defineConfig({
-  plugins: [react()]
+  plugins: [react()],
+  server:{
+    proxy:{
+      '/api':{
+        target: 'https://interges-back-1baayx9fn-nahuel-caceres-projects.vercel.app/',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  }
 })
