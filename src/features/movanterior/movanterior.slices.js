@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { getMovimientosAnteriores } from "../../service/service.movanterior";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
@@ -33,14 +34,31 @@ export const movanteriorSlice = createSlice({
         setError: (state, action) => {
             state.error = action.payload
         },
+        setDate: (state, action) => {
+            state.date = action.payload
+        },
         reset: (state) => {
             state.filteredMovements = []
             state.movements = null
             state.loading = false
             state.error = null
+            state.date = null
         }
     }
 })
-
-export const { request, select, setMovements, setDate, setFilteredMovements, setLoading, setError } = movanteriorSlice.actions
+export const fetchMovAnterior = createAsyncThunk(
+    'movanterior/fetchMovements',
+    async (data, { dispatch }) => {
+        try {
+            dispatch(setLoading(true));
+            const movements = await getMovimientosAnteriores(data);
+            dispatch(setMovements(movements));
+        } catch (error) {
+            dispatch(setError(error.message));
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+);
+export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset } = movanteriorSlice.actions
 export default movanteriorSlice.reducer

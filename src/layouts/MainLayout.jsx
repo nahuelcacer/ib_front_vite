@@ -11,6 +11,7 @@ const MainLayout = () => {
   const { institution_id } = useContext(ProfileContext)
 
   const [institutions, setInstitutions] = useState(null)
+  
   // const [selectedInstitution, setSelectedInstitution] = useState(null)
   useEffect(() => {
     const fetchInstitutions = async () => {

@@ -6,6 +6,7 @@ import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lu
 import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
+import { fetchMovAnterior, setDate } from '../features/movanterior/movanterior.slices'
 
 const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id, token_ib }) => {
   const dispatch = useDispatch()
@@ -22,6 +23,16 @@ const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id
   const obtenerMovimientosySetearValores = async (bank) => {
     try {
       setLoading(true)
+      dispatch(fetchMovAnterior({
+        desde,
+        hasta,
+        customer_id,
+        client_id,
+        token_ib: token_ib.access_token,
+        account_number: bank.account_number,
+        bank_code: bank.bank_number,
+        account_type: bank.account_type
+      }))
       const response = await getMovimientosAnteriores({
         desde,
         hasta,
@@ -40,11 +51,7 @@ const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id
       setLoading(false)
     }
   }
-  const handleDateChange = (e) => {
-    setDesde(formatDate(e.start))
-    setHasta(formatDate(e.end))
-    obtenerMovimientosySetearValores(selectedBank)
-  }
+  
   
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)

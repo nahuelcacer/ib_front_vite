@@ -19,7 +19,8 @@ import { Provider } from 'react-redux'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
-
+  const user = sessionStorage.getItem('user')
+  
   return (
     <BrowserRouter>
       <Routes>
