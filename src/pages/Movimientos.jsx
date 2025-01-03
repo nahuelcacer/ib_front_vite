@@ -14,6 +14,8 @@ const Movimientos = () => {
   ))
   const dispatch = useDispatch()
   dispatch(request(banks))
+
+  
   const handleReset = () => {
     dispatch(reset())
     dispatch(resetMovDia())

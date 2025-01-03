@@ -2,32 +2,28 @@ import { createSlice } from "@reduxjs/toolkit"
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: {options:[], selected:null, loading:false, error:null, movements:null, filteredMovements:[], date:null},
+    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null },
 
     reducers: {
-        request: (state, action) => {
-            state.options = action.payload
-        },
-        select: (state, action) => {
-            state.selected = action.payload
-        },
         setMovements: (state, action) => {
             state.movements = action.payload
             state.filteredMovements = action.payload.movements_detail
         },
-        setDate: (state, action) => {
-            state.date = action.payload
-        },
+
         setFilteredMovements: (state, action) => {
             if (action.payload === '') {
                 state.filteredMovements = state.movements.movements_detail;
                 return;
             }
+
             state.filteredMovements = state.movements.movements_detail.filter(
                 movement => {
                     if (typeof action.payload === 'string') {
-                        return movement.amount.toLowerCase().includes(action.payload.toLowerCase()) || movement..toLowerCase().includes(action.payload.toLowerCase());
+                        return movement.id.toString().includes(action.payload) ||
+                            movement.amount.toString().includes(action.payload) ||
+                            movement.code_description_bank.toString().includes(action.payload);
                     }
+                    return false;
                 }
             );
         },
@@ -36,6 +32,12 @@ export const movanteriorSlice = createSlice({
         },
         setError: (state, action) => {
             state.error = action.payload
+        },
+        reset: (state) => {
+            state.filteredMovements = []
+            state.movements = null
+            state.loading = false
+            state.error = null
         }
     }
 })
