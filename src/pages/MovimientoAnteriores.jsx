@@ -11,6 +11,7 @@ import { fetchMovAnterior, setDate } from '../features/movanterior/movanterior.s
 const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id, token_ib }) => {
   const dispatch = useDispatch()
   const banks = useSelector(state => state.bank.options)
+  const user = useSelector(state => state.login.user)
 
   const [desde, setDesde] = useState(null)
   const [hasta, setHasta] = useState(null)
@@ -26,9 +27,9 @@ const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id
       dispatch(fetchMovAnterior({
         desde,
         hasta,
-        customer_id,
-        client_id,
-        token_ib: token_ib.access_token,
+        customer_id: user.customer_id,
+        client_id: user.client_id,
+        token_ib: user.token_ib.access_token,
         account_number: bank.account_number,
         bank_code: bank.bank_number,
         account_type: bank.account_type

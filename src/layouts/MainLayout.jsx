@@ -5,13 +5,15 @@ import { ProfileContext } from '../context/ProfileContext'
 import { Outlet } from 'react-router-dom'
 import { getInstitutions } from '../service/service.instituions'
 import { Card, CardHeader, Select, SelectItem } from '@nextui-org/react'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../features/login/login.slices'
 
 
 const MainLayout = () => {
   const { institution_id } = useContext(ProfileContext)
 
   const [institutions, setInstitutions] = useState(null)
-  
+
   // const [selectedInstitution, setSelectedInstitution] = useState(null)
   useEffect(() => {
     const fetchInstitutions = async () => {
@@ -22,6 +24,12 @@ const MainLayout = () => {
     //   const selectedInstitution = JSON.parse(sessionStorage.getItem('user')).institution_id
     //   setSelectedInstitution(institution?.find(inst => inst.id === parseInt(selectedInstitution)))
   }, [])
+  const dispatch = useDispatch()
+  const user = sessionStorage.getItem('user')
+  if (user) {
+    const userData = JSON.parse(user)
+    dispatch(setUser(userData))
+  }
   return (
     <div className="flex">
       <div className="fixed top-4 right-4 z-50">
@@ -34,12 +42,6 @@ const MainLayout = () => {
             <p className='text-small text-default-500'>{institutions?.find(inst => inst.id === parseInt(institution_id)).nombre}</p>
           </CardHeader>
         </Card>
-        {/* <Select placeholder='Selecciona una institución'>
-          {institution?.map((inst) => (
-            <SelectItem key={inst.id}>{inst.nombre}</SelectItem>
-          ))}
-        </Select> */}
-
       </div>
       <Sidebar>
         <SidebarItem to="/" icon={<Home size={20} />} text="Inicio" />
