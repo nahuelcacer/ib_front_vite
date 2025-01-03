@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react'
-import getMovimientoDia from '../service/service.movdia'
 import { Avatar, Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, select, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchBankMovements, select as selectBank } from '../features/bank/bank.slices'
+import { fetchBankMovements, select as selectBank, filterMovements } from '../features/bank/bank.slices'
 
 
 const MovimientoDia = ({user_id, institution_id}) => {
@@ -14,22 +13,24 @@ const MovimientoDia = ({user_id, institution_id}) => {
   const banks = useSelector(state => state.bank.options)
   const movements = useSelector(state => state.bank.movements)
   const loading = useSelector(state => state.bank.loading)
+  const filteredMovements = useSelector(state => state.bank.filteredMovements)
+
   const [page, setPage] = useState(1)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '', institution_id: '' })
 
-  const handleSelectMov = (v) => {
-    if (!v.has_receipt) {
-      onOpen();
-      setReceiptData({
-        ...receiptData,
-        transfer_id: v.id,
-        user_id: user_id,
-        institution_id: institution_id
-      });
-      null
-    }
-  }
+  // const handleSelectMov = (v) => {
+  //   if (!v.has_receipt) {
+  //     onOpen();
+  //     setReceiptData({
+  //       ...receiptData,
+  //       transfer_id: v.id,
+  //       user_id: user_id,
+  //       institution_id: institution_id
+  //     });
+  //     null
+  //   }
+  // }
 
 
   const handleSelectBank = async (e) => {
@@ -40,13 +41,13 @@ const MovimientoDia = ({user_id, institution_id}) => {
 
   //PAGINATION
   const rowsPerPage = 10;
-  const pages = Math.ceil(movements ? movements?.general_data?.total_rows / rowsPerPage : 1)
+  const pages = Math.ceil(filteredMovements ? filteredMovements?.length / rowsPerPage : 1)
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    const data = movements?.movements_detail?.slice(start, end)
+    const data = filteredMovements ? filteredMovements?.slice(start, end) : []
     return data
-  }, [page, movements])
+  }, [page, filteredMovements])
 
 
   const handleRegisterReceipt = async () => {
@@ -65,7 +66,6 @@ const MovimientoDia = ({user_id, institution_id}) => {
           placeholder='Selecciona un banco'
           onChange={handleSelectBank}
           renderValue={(items) => {
-            console.log(items)
             return items.map((item) => {
               return (
                 <div className="flex gap-2 items-center" aria-label={item.data.label}>
@@ -96,7 +96,7 @@ const MovimientoDia = ({user_id, institution_id}) => {
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' onChange={(e) => dispatch(filterMovements(e.target.value))} />
 
       </div>
       <div>

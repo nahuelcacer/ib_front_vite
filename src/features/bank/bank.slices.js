@@ -3,7 +3,7 @@ import getMovimientoDia from "../../service/service.movdia";
 
 export const bankSlice = createSlice({
     name: 'bank',
-    initialState: {options:[], selected:null, loading:false, error:null, movements:[]},
+    initialState: {options:[], selected:null, loading:false, error:null, movements:null, filteredMovements:[]},
     reducers: {
         request: (state, action) => {
             state.options = action.payload
@@ -13,14 +13,32 @@ export const bankSlice = createSlice({
         },
         setMovements: (state, action) => {
             state.movements = action.payload
+            state.filteredMovements = action.payload.movements_detail
         },
         setLoading: (state, action) => {
             state.loading = action.payload
         },
         setError: (state, action) => {
             state.error = action.payload
+        },
+        filterMovements: (state, action) => {
+            if (action.payload === '') {
+                state.filteredMovements = state.movements.movements_detail;
+                return;
+            }
+
+            state.filteredMovements = state.movements.movements_detail.filter(
+                movement => {
+                    if (typeof action.payload === 'string') {
+                        return movement.id.toString().includes(action.payload) || 
+                               movement.amount.toString().includes(action.payload) ||
+                               movement.code_description_bank.toString().includes(action.payload);
+                    }
+                    return false;
+                }
+            );
         }
-    }   
+    }
 })
 export const fetchBankMovements = createAsyncThunk(
     'bank/fetchMovements',
@@ -34,7 +52,7 @@ export const fetchBankMovements = createAsyncThunk(
         } finally {
             dispatch(setLoading(false));
         }
-    }
+    }   
 );
-export const { request, select, setMovements, setLoading, setError } = bankSlice.actions
+export const { request, select, setMovements, setLoading, setError, filterMovements } = bankSlice.actions
 export default bankSlice.reducer
