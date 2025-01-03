@@ -5,8 +5,8 @@ import MovimientoAnteriores from './MovimientoAnteriores'
 import { ProfileContext } from '../context/ProfileContext'
 import adapterMovdia from '../adapters/adapter.movdia'
 import { useDispatch } from 'react-redux'
-import { request } from '../features/bank/bank.slices'
-
+import { request, reset } from '../features/bank/bank.slices'
+import { reset as resetMovDia } from '../features/movdia/movdia.slices'
 const Movimientos = () => {
   const { accounts, institution_id, id, customer_id, client_id, token_ib } = useContext(ProfileContext)
   const [banks, setBanks] = useState(accounts.map(
@@ -14,11 +14,15 @@ const Movimientos = () => {
   ))
   const dispatch = useDispatch()
   dispatch(request(banks))
+  const handleReset = () => {
+    dispatch(reset())
+    dispatch(resetMovDia())
+  }
   return (
     <div className='flex flex-col gap-4'>
-        <Tabs radius='md'>
+        <Tabs radius='md' onSelectionChange={handleReset}>
             <Tab key="diario" title="Movimientos del dia">
-                <MovimientoDia user_id={id} institution_id={institution_id} />
+                <MovimientoDia />
             </Tab>
 
             <Tab key="anteriores" title="Movimientos anteriores" >

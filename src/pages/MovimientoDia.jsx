@@ -1,42 +1,25 @@
 import React, { useMemo, useState } from 'react'
-import { Avatar, Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, select, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
-import { formatArs, formatDate } from '../utils/formatter'
-import { I18nProvider } from '@react-aria/i18n'
-import { registerReceipt } from '../service/service.receipt'
+import { Avatar, Chip, Input, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
+import { formatArs } from '../utils/formatter'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchBankMovements, select as selectBank, filterMovements } from '../features/bank/bank.slices'
+import { select as selectBank } from '../features/bank/bank.slices'
+import { fetchMovDia, setFilteredMovements } from '../features/movdia/movdia.slices'
 
 
-const MovimientoDia = ({user_id, institution_id}) => {
+const MovimientoDia = () => {
   const dispatch = useDispatch()
   const banks = useSelector(state => state.bank.options)
-  const movements = useSelector(state => state.bank.movements)
-  const loading = useSelector(state => state.bank.loading)
-  const filteredMovements = useSelector(state => state.bank.filteredMovements)
-
+  const loading = useSelector(state => state.movdia.loading)
+  const filteredMovements = useSelector(state => state.movdia.filteredMovements)
   const [page, setPage] = useState(1)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '', institution_id: '' })
-
-  // const handleSelectMov = (v) => {
-  //   if (!v.has_receipt) {
-  //     onOpen();
-  //     setReceiptData({
-  //       ...receiptData,
-  //       transfer_id: v.id,
-  //       user_id: user_id,
-  //       institution_id: institution_id
-  //     });
-  //     null
-  //   }
-  // }
 
 
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)
     dispatch(selectBank(bank))
-    dispatch(fetchBankMovements(bank))
+    dispatch(fetchMovDia(bank))
+    setPage(1)
   }
 
   //PAGINATION
@@ -48,12 +31,6 @@ const MovimientoDia = ({user_id, institution_id}) => {
     const data = filteredMovements ? filteredMovements?.slice(start, end) : []
     return data
   }, [page, filteredMovements])
-
-
-  const handleRegisterReceipt = async () => {
-    const response = await registerReceipt(receiptData)
-    console.log(response)
-  }
 
   return (
     <div className='flex flex-col gap-2'>
@@ -96,7 +73,7 @@ const MovimientoDia = ({user_id, institution_id}) => {
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' onChange={(e) => dispatch(filterMovements(e.target.value))} />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' onChange={(e) => dispatch(setFilteredMovements(e.target.value))} />
 
       </div>
       <div>
@@ -192,24 +169,6 @@ const MovimientoDia = ({user_id, institution_id}) => {
             })}
           </TableBody>
         </Table>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setReceiptData({ ...receiptData, description: '', user_id: '', transfer_id: '', fecha_recibo: '' })}>
-          <ModalContent>
-            <ModalHeader >Recibo</ModalHeader>
-            <ModalBody>
-              <div className='flex flex-col gap-4 pb-4'>
-                <p className='text-gray-500'>Ingresa la fecha en la que se realizo el recibo</p>
-                <Input label="Descripcion" onChange={(e) => { setReceiptData({ ...receiptData, description: e.target.value }) }}></Input>
-                <I18nProvider locale='es-AR'>
-                  <DatePicker label="Fecha del recibo" size='md' onChange={(e) => { setReceiptData({ ...receiptData, fecha_recibo: formatDate(e) }) }}></DatePicker>
-                </I18nProvider>
-                <div className='flex gap-2'>
-                  <Button onClick={onOpenChange}>Cancelar</Button>
-                  <Button color='primary' onClick={handleRegisterReceipt}>Registrar</Button>
-                </div>
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
       </div>
     </div>
   )

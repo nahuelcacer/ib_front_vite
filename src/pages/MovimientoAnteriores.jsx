@@ -4,16 +4,20 @@ import { formatDate } from '../utils/formatter'
 import { getMovimientosAnteriores } from '../service/service.movanterior'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
 import { formatArs } from '../utils/formatter'
+import { useDispatch, useSelector } from 'react-redux'
+import { select as selectBank } from '../features/bank/bank.slices'
 
+const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id, token_ib }) => {
+  const dispatch = useDispatch()
+  const banks = useSelector(state => state.bank.options)
 
-const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, client_id, token_ib }) => {
   const [desde, setDesde] = useState(null)
   const [hasta, setHasta] = useState(null)
   const [movimientos, setMovimientos] = useState(null)
   const [gral, setGral] = useState(null)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
-  const [selectedBank, setSelectedBank] = useState(null)
+  // const [selectedBank, setSelectedBank] = useState(null)
 
   const obtenerMovimientosySetearValores = async (bank) => {
     try {
@@ -41,17 +45,13 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
     setHasta(formatDate(e.end))
     obtenerMovimientosySetearValores(selectedBank)
   }
+  
   const handleSelectBank = async (e) => {
-    try {
-      setLoading(true)
-      const bank = banks.find(bank => bank.value === e.target.value)
-      setSelectedBank(bank)
-      obtenerMovimientosySetearValores(selectedBank)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
+    const bank = banks.find(bank => bank.value === e.target.value)
+    console.log(bank)
+    dispatch(selectBank(bank))
+    // dispatch(fetchBankMovements(bank))
+    // setPage(1)
   }
 
   const rowsPerPage = 8;
@@ -69,7 +69,7 @@ const MovimientoAnteriores = ({ banks, user_id, institution_id, customer_id, cli
         <h1 className='text-2xl font-bold text-left'>Movimientos anteriores</h1>
         <DateRangePicker
           size='lg'
-          onChange={handleDateChange}
+          onChange={(e) => dispatch(setDate(e))}
           aria-label='Selecciona un rango de fechas'
         >
 
