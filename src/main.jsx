@@ -14,6 +14,8 @@ import ProfileProvider from './context/ProfileContext'
 import CrearPersonal from './pages/sueldos/CrearPersonal'
 import Administracion from './pages/administracion/Administracion'
 import EditarPersonal from './pages/administracion/EditarPersonal'
+import store from './store/store'
+import { Provider } from 'react-redux'
 
 const App = () => {
   const token = sessionStorage.getItem('token')
@@ -44,9 +46,11 @@ const App = () => {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <NextUIProvider>
-      <main >
-        <App />
-      </main>
+      <Provider store={store}>
+        <main >
+          <App />
+        </main>
+      </Provider>
     </NextUIProvider>
   </StrictMode>
 )

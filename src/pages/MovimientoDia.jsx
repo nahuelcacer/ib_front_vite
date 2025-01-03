@@ -1,19 +1,22 @@
 import React, { useMemo, useState } from 'react'
 import getMovimientoDia from '../service/service.movdia'
-import { Avatar, Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import { Avatar, Button, Chip, DatePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, select, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import { formatArs, formatDate } from '../utils/formatter'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchBankMovements, select as selectBank } from '../features/bank/bank.slices'
 
-const MovimientoDia = ({banks, user_id, institution_id}) => {
 
-  const [movimientos, setMovimientos] = useState(null)
-  const [gral, setGral] = useState(null)
+const MovimientoDia = ({user_id, institution_id}) => {
+  const dispatch = useDispatch()
+  const banks = useSelector(state => state.bank.options)
+  const movements = useSelector(state => state.bank.movements)
+  const loading = useSelector(state => state.bank.loading)
   const [page, setPage] = useState(1)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [receiptData, setReceiptData] = useState({ description: '', user_id: '', transfer_id: '', fecha_recibo: '', institution_id: '' })
-  const [loading, setLoading] = useState(false)
 
   const handleSelectMov = (v) => {
     if (!v.has_receipt) {
@@ -31,30 +34,19 @@ const MovimientoDia = ({banks, user_id, institution_id}) => {
 
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)
-
-    const response = await getMovimientoDia(bank)
-      .then((response) => {
-        setLoading(true)
-        setMovimientos(response.movements_detail)
-        setGral(response.general_data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    dispatch(selectBank(bank))
+    dispatch(fetchBankMovements(bank))
   }
 
   //PAGINATION
   const rowsPerPage = 10;
-  const pages = Math.ceil(movimientos ? gral.total_rows / rowsPerPage : 1)
+  const pages = Math.ceil(movements ? movements?.general_data?.total_rows / rowsPerPage : 1)
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    const data = movimientos?.slice(start, end)
+    const data = movements?.movements_detail?.slice(start, end)
     return data
-  }, [page, movimientos])
+  }, [page, movements])
 
 
   const handleRegisterReceipt = async () => {
