@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { getMovimientosAnteriores } from "../../service/service.movanterior";
+import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
@@ -35,7 +36,11 @@ export const movanteriorSlice = createSlice({
             state.error = action.payload
         },
         setDate: (state, action) => {
-            state.date = action.payload
+            console.log(action.payload)
+            state.date = {
+                start: formatDate(action.payload.start),
+                end: formatDate(action.payload.end)
+            }
         },
         reset: (state) => {
             state.filteredMovements = []
@@ -50,6 +55,7 @@ export const fetchMovAnterior = createAsyncThunk(
     'movanterior/fetchMovements',
     async (data, { dispatch }) => {
         try {
+            console.log(data)
             dispatch(setLoading(true));
             const movements = await getMovimientosAnteriores(data);
             dispatch(setMovements(movements));
