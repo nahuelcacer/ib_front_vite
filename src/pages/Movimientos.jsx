@@ -7,6 +7,7 @@ import adapterMovdia from '../adapters/adapter.movdia'
 import { useDispatch } from 'react-redux'
 import { request, reset } from '../features/bank/bank.slices'
 import { reset as resetMovDia } from '../features/movdia/movdia.slices'
+import { reset as resetMovAnterior } from '../features/movanterior/movanterior.slices'
 const Movimientos = () => {
   const { accounts, institution_id, id, customer_id, client_id, token_ib } = useContext(ProfileContext)
   const [banks, setBanks] = useState(accounts.map(
@@ -19,6 +20,7 @@ const Movimientos = () => {
   const handleReset = () => {
     dispatch(reset())
     dispatch(resetMovDia())
+    dispatch(resetMovAnterior())
   }
   return (
     <div className='flex flex-col gap-4'>
@@ -28,7 +30,7 @@ const Movimientos = () => {
             </Tab>
 
             <Tab key="anteriores" title="Movimientos anteriores" >
-                <MovimientoAnteriores customer_id={customer_id} client_id={client_id} token_ib={token_ib}/>
+                <MovimientoAnteriores/>
             </Tab>
         </Tabs>
     </div>
