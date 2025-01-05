@@ -15,11 +15,10 @@ const login = async (username, password, institution) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+        console.log("response", response)
         const data = await response.json()
-        const decodedToken = jwtDecode(data.token)
+        console.log("data", data)
         sessionStorage.setItem('token', data.token)
-        sessionStorage.setItem('user', JSON.stringify(decodedToken))
         return data
     } catch (error) {
         console.error('Error al iniciar sesión:', error)

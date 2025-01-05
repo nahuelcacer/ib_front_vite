@@ -12,6 +12,9 @@ export const loginSlice = createSlice({
             state.client_id = action.payload.client_id
             state.accounts = action.payload.accounts
             state.id = action.payload.id
+        },
+        changeInstitution: (state, action) => {
+            state.institution_id = action.payload
         }
     }
 })

@@ -24,12 +24,7 @@ const MainLayout = () => {
     //   const selectedInstitution = JSON.parse(sessionStorage.getItem('user')).institution_id
     //   setSelectedInstitution(institution?.find(inst => inst.id === parseInt(selectedInstitution)))
   }, [])
-  const dispatch = useDispatch()
-  const user = sessionStorage.getItem('user')
-  if (user) {
-    const userData = JSON.parse(user)
-    dispatch(setUser(userData))
-  }
+ 
   return (
     <div className="flex">
       <div className="fixed top-4 right-4 z-50">
