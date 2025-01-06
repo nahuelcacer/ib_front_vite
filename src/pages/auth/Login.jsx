@@ -24,10 +24,9 @@ function Login() {
     try {
       const data = await login(formData.username, formData.password, formData.institution);
       const tokenDecoded = jwtDecode(data.token)
-      dispatch(setUser(tokenDecoded)).then(() => {
-        navigate('/');
-      })
+      dispatch(setUser(tokenDecoded))
       dispatch(asyncSetInstitutions())
+      navigate('/')
       console.log("Datos de login:", data);
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
