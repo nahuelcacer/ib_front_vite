@@ -26,7 +26,7 @@ export const movanteriorSlice = createSlice({
             state.filteredMovements = state.movements.movements_detail.filter(
                 movement => {
                     if (typeof action.payload === 'string') {
-                        return movement.amount.toLowerCase().includes(action.payload.toLowerCase()) || movement..toLowerCase().includes(action.payload.toLowerCase());
+                        return movement.amount.toLowerCase().includes(action.payload.toLowerCase()) || movement.toLowerCase().includes(action.payload.toLowerCase());
                     }
                 }
             );
