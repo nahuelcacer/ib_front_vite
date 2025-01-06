@@ -1,61 +1,41 @@
 import { Avatar, Button, Chip, DatePicker, DateRangePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import React, { useMemo, useState } from 'react'
 import { formatDate } from '../utils/formatter'
-import { getMovimientosAnteriores } from '../service/service.movanterior'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
 import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
+import { fetchMovAnterior, setFilteredMovements, setDate } from '../features/movanterior/movanterior.slices'
 
-const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id, token_ib }) => {
+const MovimientoAnteriores = () => {
   const dispatch = useDispatch()
   const banks = useSelector(state => state.bank.options)
-
-  const [desde, setDesde] = useState(null)
-  const [hasta, setHasta] = useState(null)
-  const [movimientos, setMovimientos] = useState(null)
-  const [gral, setGral] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const user = useSelector(state => state.login.user)
+  const date = useSelector(state => state.movanterior.date)
+  const movimientos = useSelector(state => state.movanterior.filteredMovements)
+  const loading = useSelector(state => state.movanterior.loading)
   const [page, setPage] = useState(1)
-  // const [selectedBank, setSelectedBank] = useState(null)
 
-  const obtenerMovimientosySetearValores = async (bank) => {
-    try {
-      setLoading(true)
-      const response = await getMovimientosAnteriores({
-        desde,
-        hasta,
-        customer_id,
-        client_id,
-        token_ib: token_ib.access_token,
-        account_number: bank.account_number,
-        bank_code: bank.bank_number,
-        account_type: bank.account_type
-      })
-      setMovimientos(response.movements_detail)
-      setGral(response.general_data)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-  const handleDateChange = (e) => {
-    setDesde(formatDate(e.start))
-    setHasta(formatDate(e.end))
-    obtenerMovimientosySetearValores(selectedBank)
-  }
+  
   
   const handleSelectBank = async (e) => {
     const bank = banks.find(bank => bank.value === e.target.value)
-    console.log(bank)
     dispatch(selectBank(bank))
-    // dispatch(fetchBankMovements(bank))
-    // setPage(1)
+    dispatch(fetchMovAnterior({
+      desde: date.start,
+      hasta: date.end,
+      customer_id: user.customer_id,
+      client_id: user.client_id,
+      token_ib: user.token_ib.access_token,
+      account_number: bank.account_number,
+      bank_code: bank.bank_number,
+      account_type: bank.account_type
+    }))
+
   }
 
   const rowsPerPage = 8;
-  const pages = Math.ceil(movimientos ? gral.total_rows / rowsPerPage : 1)
+  const pages = Math.ceil(movimientos ? movimientos.length / rowsPerPage : 1)
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -69,7 +49,7 @@ const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id
         <h1 className='text-2xl font-bold text-left'>Movimientos anteriores</h1>
         <DateRangePicker
           size='lg'
-          onChange={(e) => dispatch(setDate(e))}
+          onChange={(e) => dispatch(setDate({start: e.start, end: e.end}))}
           aria-label='Selecciona un rango de fechas'
         >
 
@@ -111,7 +91,7 @@ const MovimientoAnteriores = ({  user_id, institution_id, customer_id, client_id
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' onChange={(e) => dispatch(setFilteredMovements(e.target.value))} />
 
       </div>
       <div>

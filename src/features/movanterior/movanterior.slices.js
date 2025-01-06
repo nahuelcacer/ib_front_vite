@@ -1,33 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { getMovimientosAnteriores } from "../../service/service.movanterior";
+import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: {options:[], selected:null, loading:false, error:null, movements:null, filteredMovements:[], date:null},
+    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null },
 
     reducers: {
-        request: (state, action) => {
-            state.options = action.payload
-        },
-        select: (state, action) => {
-            state.selected = action.payload
-        },
         setMovements: (state, action) => {
             state.movements = action.payload
             state.filteredMovements = action.payload.movements_detail
         },
-        setDate: (state, action) => {
-            state.date = action.payload
-        },
+
         setFilteredMovements: (state, action) => {
             if (action.payload === '') {
                 state.filteredMovements = state.movements.movements_detail;
                 return;
             }
+
             state.filteredMovements = state.movements.movements_detail.filter(
                 movement => {
                     if (typeof action.payload === 'string') {
-                        return movement.amount.toLowerCase().includes(action.payload.toLowerCase()) || movement.toLowerCase().includes(action.payload.toLowerCase());
+                        return movement.id.toString().includes(action.payload) ||
+                            movement.amount.toString().includes(action.payload) ||
+                            movement.code_description_bank.toString().includes(action.payload);
                     }
+                    return false;
                 }
             );
         },
@@ -36,9 +34,37 @@ export const movanteriorSlice = createSlice({
         },
         setError: (state, action) => {
             state.error = action.payload
+        },
+        setDate: (state, action) => {
+            console.log(action.payload)
+            state.date = {
+                start: formatDate(action.payload.start),
+                end: formatDate(action.payload.end)
+            }
+        },
+        reset: (state) => {
+            state.filteredMovements = []
+            state.movements = null
+            state.loading = false
+            state.error = null
+            state.date = null
         }
     }
 })
-
-export const { request, select, setMovements, setDate, setFilteredMovements, setLoading, setError } = movanteriorSlice.actions
+export const fetchMovAnterior = createAsyncThunk(
+    'movanterior/fetchMovements',
+    async (data, { dispatch }) => {
+        try {
+            console.log(data)
+            dispatch(setLoading(true));
+            const movements = await getMovimientosAnteriores(data);
+            dispatch(setMovements(movements));
+        } catch (error) {
+            dispatch(setError(error.message));
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+);
+export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset } = movanteriorSlice.actions
 export default movanteriorSlice.reducer
