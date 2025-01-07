@@ -21,7 +21,6 @@ const MovimientoDia = () => {
     dispatch(fetchMovDia(bank))
     setPage(1)
   }
-s
   //PAGINATION
   const rowsPerPage = 10;
   const pages = Math.ceil(filteredMovements ? filteredMovements?.length / rowsPerPage : 1)
