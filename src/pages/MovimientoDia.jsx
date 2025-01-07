@@ -21,7 +21,7 @@ const MovimientoDia = () => {
     dispatch(fetchMovDia(bank))
     setPage(1)
   }
-
+s
   //PAGINATION
   const rowsPerPage = 10;
   const pages = Math.ceil(filteredMovements ? filteredMovements?.length / rowsPerPage : 1)
@@ -43,17 +43,17 @@ const MovimientoDia = () => {
           placeholder='Selecciona un banco'
           onChange={handleSelectBank}
           renderValue={(items) => {
-            return items.map((item) => {
-              return (
-                <div className="flex gap-2 items-center" aria-label={item.data.label}>
-                  <Avatar src={item.data.img} alt={item.data.label} className="w-8 h-8" />
+            return items.map((item, index) => (
+              <SelectItem key={index} value={item.value}>
+                <div className="flex gap-2 items-center" aria-label={item.label}>
+                  <Avatar src={item.img} alt={item.label} className="w-8 h-8" />
                   <div className='flex flex-col'>
-                    <span className="text-small">{item.data.label}</span>
-                    <span className="text-tiny text-default-400">{item.data.value}</span>
+                    <span className="text-small">{item.label}</span>
+                    <span className="text-tiny text-default-400">{item.value}</span>
                   </div>
                 </div>
-              )
-            })
+              </SelectItem>
+            ))
           }}
           size='lg'
         >

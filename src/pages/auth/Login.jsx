@@ -6,8 +6,6 @@ import login from "../../service/service.login";
 import LoadingButton from "../../components/LoadingButton";
 import { Button, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
 import { getInstitutions } from "../../service/service.instituions";
-import { jwtDecode } from "jwt-decode";
-import { setUser } from "../../features/login/login.slices";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { asyncSetInstitutions } from "../../features/institutions/institutions.slices";
@@ -23,11 +21,8 @@ function Login() {
     setLoading(true);
     try {
       const data = await login(formData.username, formData.password, formData.institution);
-      const tokenDecoded = jwtDecode(data.token)
-      dispatch(setUser(tokenDecoded))
       dispatch(asyncSetInstitutions())
       navigate('/')
-      console.log("Datos de login:", data);
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     } finally {

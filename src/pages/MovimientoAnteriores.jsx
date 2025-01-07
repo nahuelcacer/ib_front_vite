@@ -6,11 +6,12 @@ import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
 import { fetchMovAnterior, setFilteredMovements, setDate } from '../features/movanterior/movanterior.slices'
+import authService from '../service/auth'
 
 const MovimientoAnteriores = () => {
   const dispatch = useDispatch()
   const banks = useSelector(state => state.bank.options)
-  const user = useSelector(state => state.login.user)
+  const user = authService.getUser()
   const date = useSelector(state => state.movanterior.date)
   const movimientos = useSelector(state => state.movanterior.filteredMovements)
   const loading = useSelector(state => state.movanterior.loading)

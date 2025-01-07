@@ -1,8 +1,9 @@
+import authService from "./auth"
+
 const getMovimientoDia = async (accounts) => {
     try {
-        console.log("aver el bank numer", accounts)
-        const userData = sessionStorage.getItem('user')
-        const { client_id, token_ib, customer_id } = JSON.parse(userData)
+        const userData = authService.getUser()
+        const { client_id, token_ib, customer_id } = userData
         const bodyData = {
             token_ib: token_ib.access_token,
             client_id: client_id,

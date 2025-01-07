@@ -16,9 +16,10 @@ import Administracion from './pages/administracion/Administracion'
 import EditarPersonal from './pages/administracion/EditarPersonal'
 import store from './store/store'
 import { Provider, useSelector } from 'react-redux'
+import authService from './service/auth'
 
 const App = () => {
-  const token = sessionStorage.getItem('token')
+  const token = authService.getToken()
   return (
     <BrowserRouter>
       <Routes>

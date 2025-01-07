@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import authService from "./auth";
 
 const login = async (username, password, institution) => {
     try {
@@ -15,12 +16,9 @@ const login = async (username, password, institution) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        console.log("response", response)
         const data = await response.json()
-        console.log("data", data)
-        const decodedToken = jwtDecode(data.token)
-        sessionStorage.setItem('token', data.token)
-        sessionStorage.setItem('user', JSON.stringify(decodedToken))
+        // const decodedToken = jwtDecode(data.token)
+        authService.setToken(data.token)
         return data
     } catch (error) {
         console.error('Error al iniciar sesión:', error)

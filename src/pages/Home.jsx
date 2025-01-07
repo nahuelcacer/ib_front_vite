@@ -138,7 +138,7 @@ const Home = () => {
         <div className="flex flex-row gap-4">
           <div className="rounded-lg border flex-grow-[4]">
             <div className="w-60 m-2">
-              <DatePicker onChange={(e) => { setFechaMovimientos(e) }}></DatePicker>
+              <DatePicker onChange={(e) => { setFechaMovimientos(e) }} aria-label="Selecciona una fecha" ></DatePicker>
 
             </div>
 
@@ -188,10 +188,10 @@ const Home = () => {
             </div>
           </div>
           <div className="rounded-lg border flex-grow-[1]">
-            <div className="flex flex-col gap-2 p-2">
-              <h1 className="text-2xl font-bold">Crear movimiento</h1>
+            <div className="flex flex-col gap-2 p-2" aria-label="Crear movimiento">
+              <h1 className="text-2xl font-bold" >Crear movimiento</h1>
               <span className="text-sm text-default-500">Crea un nuevo movimiento</span>
-              <form onSubmit={(e) => handleSubmit(e)}>
+              <form onSubmit={(e) => handleSubmit(e)} aria-label="Formulario de creacion de movimiento">
                 <div className="flex flex-col gap-2">
                   <Select
                     aria-label='Selecciona un banco'

@@ -1,9 +1,10 @@
 import axios from "axios"; // Importar Axios
+import authService from "./auth";
 
 export const getSaldos = async (desde, hasta, setter) => {
   try {
-    const userData = sessionStorage.getItem("user");
-    const { token_ib, client_id, customer_id, accounts } = JSON.parse(userData);
+    const userData = authService.getUser();
+    const { token_ib, client_id, customer_id, accounts } = userData;
 
     const accounts_number = accounts.map((acc) => acc.account_number);
     const bank_code = accounts.map((acc) => acc.bank_number);
