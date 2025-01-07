@@ -72,7 +72,10 @@ const MovimientoDia = () => {
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' onChange={(e) => dispatch(setFilteredMovements(e.target.value))} />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' onChange={(e) => {
+          dispatch(setFilteredMovements(e.target.value))
+          setPage(1)
+        }} />
 
       </div>
       <div>
