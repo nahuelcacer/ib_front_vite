@@ -92,7 +92,10 @@ const MovimientoAnteriores = () => {
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' onChange={(e) => dispatch(setFilteredMovements(e.target.value))} />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' onChange={(e) => {
+          dispatch(setFilteredMovements(e.target.value))
+          setPage(1)
+        }} />
 
       </div>
       <div>
