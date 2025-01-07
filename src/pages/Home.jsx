@@ -56,11 +56,11 @@ const CardBancos = ({ cuenta, proyeccionSaldo, index }) => {
 }
 const Home = () => {
   const [saldos, setSaldos] = useState(null);
-  const { accounts, institution } = useContext(ProfileContext)
+  const { accounts, institution_id } = useContext(ProfileContext)
   const [banks, setBanks] = useState(accounts.map(
     account => adapterMovdia(account)
   ))
-  const [movement, setMovement] = useState({ institution_id: institution.id, fecha_movimiento: new Date().toISOString().split('T')[0] })
+  const [movement, setMovement] = useState({ institution_id: institution_id, fecha_movimiento: new Date().toISOString().split('T')[0] })
   const [fechaMovimientos, setFechaMovimientos] = useState(new Date().toISOString().split("T")[0])
   const [searchedMovement, setSearchedMovement] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -72,7 +72,7 @@ const Home = () => {
       const data = Object.fromEntries(new FormData(e.currentTarget));
       await createMovement(data)
       await getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
-      await getMovementByDate(fechaMovimientos, institution.id, setSearchedMovement)
+      await getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
     } catch (err) {
       console.error(err)
     } finally {
@@ -85,7 +85,7 @@ const Home = () => {
     const response = await deleteMovement(id)
       .then(() => {
         getSaldos(fechaMovimientos, fechaMovimientos, setSaldos);
-        getMovementByDate(fechaMovimientos, institution.id, setSearchedMovement)
+        getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
       })
       .catch((err) => {
         console.error(err)
@@ -101,7 +101,7 @@ const Home = () => {
     setFechaMovimientos(formattedDate)
   }, []);
   useEffect(() => {
-    getMovementByDate(fechaMovimientos, institution.id, setSearchedMovement)
+    getMovementByDate(fechaMovimientos, institution_id, setSearchedMovement)
   }, [fechaMovimientos])
   return (
     <div>
@@ -240,7 +240,7 @@ const Home = () => {
                     })}
                   </Select>
                   <Input placeholder="Monto" name="amount" />
-                  <input type="hidden" name="institution_id" value={institution.id} />
+                  <input type="hidden" name="institution_id" value={institution_id} />
                   <input type="hidden" name="fecha_movimiento" value={fechaMovimientos} />
                   <Button color="primary" type="submit" isLoading={isLoading}>Crear</Button>
                 </div>

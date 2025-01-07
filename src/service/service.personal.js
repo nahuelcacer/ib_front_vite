@@ -16,7 +16,7 @@ export const getPersonal = async (q, setter) => {
   const response = await axios.get(`${import.meta.env.VITE_API_URL}personal`,
     {
       params: {
-        institution_id: q
+        institution_id: q 
       }, 
       headers: {
         'Content-Type': 'application/json'

@@ -18,17 +18,16 @@ import store from './store/store'
 import { Provider, useSelector } from 'react-redux'
 
 const App = () => {
-  const tokenUser = useSelector(state => state.login.token)
-  
+  const token = sessionStorage.getItem('token')
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<AuthLayout />}>
-          <Route path="login" element={!tokenUser ? <Login /> : <Navigate to="/" />} />
-          <Route path="register" element={!tokenUser ? <Register /> : <Navigate to="/" />} />
+          <Route path="login" element={!token ? <Login /> : <Navigate to="/" />} />
+          <Route path="register" element={!token ? <Register /> : <Navigate to="/" />} />
         </Route>
 
-        <Route path="/" element={tokenUser ? <ProfileProvider><MainLayout /></ProfileProvider> : <Navigate to="/auth/login" />} >
+        <Route path="/" element={token ? <ProfileProvider><MainLayout /></ProfileProvider> : <Navigate to="/auth/login" />} >
           <Route path="/" element={<Home />} />
           <Route path="/administracion" element={<Administracion />} />
           <Route path="/movimientos" element={<Movimientos />} />
