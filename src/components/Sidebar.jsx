@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 const SidebarContext = createContext()
 const logout = () => {
-    sessionStorage.clear()
+    localStorage.clear()
     window.location.href = '/auth/login'
 }
 

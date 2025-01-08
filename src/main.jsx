@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
@@ -20,6 +20,7 @@ import authService from './service/auth'
 
 const App = () => {
   const token = authService.getToken()
+ 
   return (
     <BrowserRouter>
       <Routes>

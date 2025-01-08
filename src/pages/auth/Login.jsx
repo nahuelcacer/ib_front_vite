@@ -9,6 +9,7 @@ import { getInstitutions } from "../../service/service.instituions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { asyncSetInstitutions } from "../../features/institutions/institutions.slices";
+import authService from "../../service/auth";
 
 function Login() {
   const [formData, setFormData] = useState({});
@@ -20,9 +21,14 @@ function Login() {
   const handleLogin = async (e) => {
     setLoading(true);
     try {
-      const data = await login(formData.username, formData.password, formData.institution);
-      dispatch(asyncSetInstitutions())
-      navigate('/')
+      const data = await login(formData.username, formData.password, formData.institution)
+      const token = authService.getToken()
+      if (token) {  
+        dispatch(asyncSetInstitutions())
+        window.location.href = '/'
+      } else {
+        throw new Error('No se pudo obtener el token después del login');
+      }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     } finally {
