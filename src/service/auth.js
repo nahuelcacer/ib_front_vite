@@ -19,7 +19,6 @@ const authService = {
     getUser() {
       const token = this.getToken()
       const decodedToken = jwtDecode(token)
-      console.log(decodedToken, "ESTE ES EL DECODED TOKEN")
       return decodedToken
     }
   }
