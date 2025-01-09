@@ -4,7 +4,7 @@ import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null },
+    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null },
 
     reducers: {
         setMovements: (state, action) => {
@@ -48,6 +48,9 @@ export const movanteriorSlice = createSlice({
             state.loading = false
             state.error = null
             state.date = null
+        },
+        setFilterStatus: (state, action) => {
+            state.filterStatus = action.payload
         }
     }
 })
@@ -66,5 +69,5 @@ export const fetchMovAnterior = createAsyncThunk(
         }
     }
 );
-export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset } = movanteriorSlice.actions
+export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset, setFilterStatus } = movanteriorSlice.actions
 export default movanteriorSlice.reducer

@@ -1,15 +1,55 @@
-import { Avatar, Button, Chip, DatePicker, DateRangePicker, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
+import { Avatar, Button, Chip, DatePicker, DateRangePicker, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { formatDate } from '../utils/formatter'
-import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, Receipt, X } from 'lucide-react'
+import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, ChevronDown, Receipt, X } from 'lucide-react'
 import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
-import { fetchMovAnterior, setFilteredMovements, setDate } from '../features/movanterior/movanterior.slices'
+import { fetchMovAnterior, setFilteredMovements, setDate, setFilterStatus } from '../features/movanterior/movanterior.slices'
 import authService from '../service/auth'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
 
+const Estado = () => {
+  const dispatch = useDispatch()
+  const filterStatus = useSelector(state => state.movanterior.filterStatus)
+  const estados = [
+    {
+      label: "Todos",
+      value: null
+    },
+    {
+      label: "Con comprobante",
+      value: true
+    },
+    {
+      label: "Sin comprobante",
+      value: false
+    }
+  ]
+  return (
+    <div>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button>
+            <ChevronDown className='h-4 w-4' /> Estado
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu selectedKeys={filterStatus} selectionMode="single" onSelectionChange={(e) => dispatch(setFilterStatus(e))}>
+          {
+            estados.map((estado) => {
+              return (
+                <DropdownItem key={estado.value} >
+                  {estado.label}
+                </DropdownItem>
+              )
+            })
+          }
+        </DropdownMenu>
+      </Dropdown>
+    </div>
+  )
+}
 const MovimientoAnteriores = () => {
   const dispatch = useDispatch()
   const banks = useSelector(state => state.bank.options)
@@ -125,6 +165,7 @@ const MovimientoAnteriores = () => {
         <Table
           aria-label='Tabla de movimientos del dia'
           removeWrapper
+          topContent={Estado()}
           bottomContent={
             <div className='flex w-full justify-center'>
               <Pagination
