@@ -34,7 +34,6 @@ const Estado = ({setPage}) => {
   ]
   
   const handleFilterStatus = (e) => {
-    
     dispatch(setFilterStatus(strToBool(...e)))
     dispatch(setFilteredMovements(''))
     setPage(1)
