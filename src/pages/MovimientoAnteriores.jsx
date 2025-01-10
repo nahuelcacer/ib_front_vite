@@ -15,7 +15,7 @@ const strToBool = (str) => {
   return str === "true" ? true : false
 }
 
-const Estado = () => {
+const Estado = ({setPage}) => {
   const dispatch = useDispatch()
   const filterStatus = useSelector(state => state.movanterior.filterStatus)
   const estados = [
@@ -37,6 +37,7 @@ const Estado = () => {
     
     dispatch(setFilterStatus(strToBool(...e)))
     dispatch(setFilteredMovements(''))
+    setPage(1)
   }
 
   return (
@@ -178,7 +179,7 @@ const MovimientoAnteriores = () => {
         <Table
           aria-label='Tabla de movimientos del dia'
           removeWrapper
-          topContent={Estado()}
+          topContent={<Estado setPage={setPage}/>}
           bottomContent={
             <div className='flex w-full justify-center'>
               <Pagination
