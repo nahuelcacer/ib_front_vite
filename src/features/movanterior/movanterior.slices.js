@@ -4,7 +4,7 @@ import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null },
+    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null, textFilter: '' },
 
     reducers: {
         setMovements: (state, action) => {
@@ -12,22 +12,25 @@ export const movanteriorSlice = createSlice({
             state.filteredMovements = action.payload.movements_detail
         },
 
-        setFilteredMovements: (state, action) => {
-            if (action.payload === '') {
-                state.filteredMovements = state.movements.movements_detail;
-                return;
+        setFilteredMovements: (state) => {
+            if (!state.movements) return;
+            
+            let filtered = state.movements.movements_detail;
+
+            if (state.textFilter.trim()) {
+                filtered = filtered.filter(movement => {
+                    const searchTerm = state.textFilter.toLowerCase();
+                    return movement.id.toString().toLowerCase().includes(searchTerm) ||
+                        movement.amount.toString().toLowerCase().includes(searchTerm) ||
+                        movement.code_description_bank.toString().toLowerCase().includes(searchTerm);
+                });
             }
 
-            state.filteredMovements = state.movements.movements_detail.filter(
-                movement => {
-                    if (typeof action.payload === 'string') {
-                        return movement.id.toString().includes(action.payload) ||
-                            movement.amount.toString().includes(action.payload) ||
-                            movement.code_description_bank.toString().includes(action.payload);
-                    }
-                    return false;
-                }
-            );
+            if (state.filterStatus !== null) {
+                filtered = filtered.filter(movement => movement.has_receipt === state.filterStatus);
+            }
+            
+            state.filteredMovements = filtered;
         },
         setLoading: (state, action) => {
             state.loading = action.payload
@@ -51,6 +54,11 @@ export const movanteriorSlice = createSlice({
         },
         setFilterStatus: (state, action) => {
             state.filterStatus = action.payload
+            // setFilteredMovements(state, action)
+        },
+        setTextFilter: (state, action) => {
+            state.textFilter = action.payload
+            // setFilteredMovements(state, action)
         }
     }
 })
@@ -69,5 +77,5 @@ export const fetchMovAnterior = createAsyncThunk(
         }
     }
 );
-export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset, setFilterStatus } = movanteriorSlice.actions
+export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset, setFilterStatus, setTextFilter } = movanteriorSlice.actions
 export default movanteriorSlice.reducer

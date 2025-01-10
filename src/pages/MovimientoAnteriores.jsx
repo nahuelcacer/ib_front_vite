@@ -5,17 +5,22 @@ import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, ChevronDown, Receipt,
 import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
-import { fetchMovAnterior, setFilteredMovements, setDate, setFilterStatus } from '../features/movanterior/movanterior.slices'
+import { fetchMovAnterior, setFilteredMovements, setDate, setFilterStatus, setTextFilter } from '../features/movanterior/movanterior.slices'
 import authService from '../service/auth'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
+
+const strToBool = (str) => {
+  if (str === "null") return null
+  return str === "true" ? true : false
+}
 
 const Estado = () => {
   const dispatch = useDispatch()
   const filterStatus = useSelector(state => state.movanterior.filterStatus)
   const estados = [
     {
-      label: "Todos",
+      label: "Todas las transacciones",
       value: null
     },
     {
@@ -27,15 +32,22 @@ const Estado = () => {
       value: false
     }
   ]
+  
+  const handleFilterStatus = (e) => {
+    
+    dispatch(setFilterStatus(strToBool(...e)))
+    dispatch(setFilteredMovements(''))
+  }
+
   return (
-    <div>
+    <div className='flex justify-end'>
       <Dropdown>
         <DropdownTrigger>
           <Button>
-            <ChevronDown className='h-4 w-4' /> Estado
+            <ChevronDown className='h-4 w-4' /> {estados.find(estado => estado.value === filterStatus).label}
           </Button>
         </DropdownTrigger>
-        <DropdownMenu selectedKeys={filterStatus} selectionMode="single" onSelectionChange={(e) => dispatch(setFilterStatus(e))}>
+        <DropdownMenu selectedKeys={new Set([filterStatus])} selectionMode="single" onSelectionChange={handleFilterStatus}>
           {
             estados.map((estado) => {
               return (
@@ -82,7 +94,11 @@ const MovimientoAnteriores = () => {
     dispatch(selectBank(selectedBank))
     obtenerMovimientos()
   }
-
+  const handleTextFilter = (e) => {
+    dispatch(setTextFilter(e.target.value))
+    dispatch(setFilteredMovements(''))
+    setPage(1)
+  }
   const obtenerMovimientos = async () => {
     const dataToSend = {
       desde: date.start,
@@ -155,10 +171,7 @@ const MovimientoAnteriores = () => {
             }
           }
         </Select>
-        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' onChange={(e) => {
-          dispatch(setFilteredMovements(e.target.value))
-          setPage(1)
-        }} />
+        <Input type="text" placeholder="Realiza una busqueda" size='lg' aria-label='Busqueda' onChange={handleTextFilter} />
 
       </div>
       <div>

@@ -21,7 +21,8 @@ export const movdiaSlice = createSlice({
                     if (typeof action.payload === 'string') {
                         return movement.id.toString().includes(action.payload) ||
                             movement.amount.toString().includes(action.payload) ||
-                            movement.code_description_bank.toString().includes(action.payload);
+                            movement.code_description_bank.toString().includes(action.payload) ||
+                            movement.depositor_description.includes(action.payload)
                     }
                     return false;
                 }
