@@ -99,6 +99,10 @@ const MovimientoAnteriores = () => {
     dispatch(setFilteredMovements(''))
     setPage(1)
   }
+  const handleDateFilter = (e) => {
+    dispatch(setDate({ start: e.start, end: e.end }))
+    obtenerMovimientos()
+  }
   const obtenerMovimientos = async () => {
     const dataToSend = {
       desde: date.start,
@@ -129,7 +133,7 @@ const MovimientoAnteriores = () => {
         <h1 className='text-2xl font-bold text-left'>Movimientos anteriores</h1>
         <DateRangePicker
           size='lg'
-          onChange={(e) => dispatch(setDate({ start: e.start, end: e.end }))}
+          onChange={handleDateFilter}
           aria-label='Selecciona un rango de fechas'
         >
 
