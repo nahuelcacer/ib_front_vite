@@ -4,7 +4,7 @@ import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null, textFilter: '' },
+    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null, textFilter: '', filterType: null },
 
     reducers: {
         setMovements: (state, action) => {
@@ -30,6 +30,9 @@ export const movanteriorSlice = createSlice({
                 filtered = filtered.filter(movement => movement.has_receipt === state.filterStatus);
             }
             
+            if (state.filterType !== null) {
+                filtered = filtered.filter(movement => movement.operation_code_ib !== state.filterType);
+            }
             state.filteredMovements = filtered;
         },
         setLoading: (state, action) => {
@@ -59,6 +62,10 @@ export const movanteriorSlice = createSlice({
         setTextFilter: (state, action) => {
             state.textFilter = action.payload
             // setFilteredMovements(state, action)
+        },
+        setFilterType: (state, action) => {
+            state.filterType = action.payload
+            // setFilteredMovements(state, action)
         }
     }
 })
@@ -77,5 +84,5 @@ export const fetchMovAnterior = createAsyncThunk(
         }
     }
 );
-export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset, setFilterStatus, setTextFilter } = movanteriorSlice.actions
+export const { setMovements, setDate, setFilteredMovements, setLoading, setError, reset, setFilterStatus, setTextFilter, setFilterType } = movanteriorSlice.actions
 export default movanteriorSlice.reducer

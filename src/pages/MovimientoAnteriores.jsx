@@ -5,7 +5,7 @@ import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, ChevronDown, Receipt,
 import { formatArs } from '../utils/formatter'
 import { useDispatch, useSelector } from 'react-redux'
 import { select as selectBank } from '../features/bank/bank.slices'
-import { fetchMovAnterior, setFilteredMovements, setDate, setFilterStatus, setTextFilter } from '../features/movanterior/movanterior.slices'
+import { fetchMovAnterior, setFilteredMovements, setDate, setFilterStatus, setTextFilter, setFilterType } from '../features/movanterior/movanterior.slices'
 import authService from '../service/auth'
 import { I18nProvider } from '@react-aria/i18n'
 import { registerReceipt } from '../service/service.receipt'
@@ -18,6 +18,7 @@ const strToBool = (str) => {
 const Estado = ({setPage}) => {
   const dispatch = useDispatch()
   const filterStatus = useSelector(state => state.movanterior.filterStatus)
+  const filterType = useSelector(state => state.movanterior.filterType)
   const estados = [
     {
       label: "Todas las transacciones",
@@ -32,13 +33,24 @@ const Estado = ({setPage}) => {
       value: false
     }
   ]
+  const filtros = [{
+    label: "Todos",
+    value: null
+  },{
+    label: "Sin depositos",
+    value: '104'
+  }]
   
   const handleFilterStatus = (e) => {
     dispatch(setFilterStatus(strToBool(...e)))
     dispatch(setFilteredMovements(''))
     setPage(1)
   }
-
+  const handleFilterType = (e) => {
+    dispatch(setFilterType(...e))
+    dispatch(setFilteredMovements(''))
+    setPage(1)
+  }
   return (
     <div className='flex justify-end'>
       <Dropdown>
@@ -53,6 +65,24 @@ const Estado = ({setPage}) => {
               return (
                 <DropdownItem key={estado.value} >
                   {estado.label}
+                </DropdownItem>
+              )
+            })
+          }
+        </DropdownMenu>
+      </Dropdown>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button>
+            <ChevronDown className='h-4 w-4' /> {filtros.find(filtro => filtro.value === filterType).label}
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu selectedKeys={new Set([filterType])} selectionMode="single" onSelectionChange={handleFilterType}>
+          {
+            filtros.map((filtro) => {
+              return (
+                <DropdownItem key={filtro.value} >
+                  {filtro.label}
                 </DropdownItem>
               )
             })
