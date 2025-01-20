@@ -14,11 +14,14 @@ const MovimientoDia = () => {
   const filteredMovements = useSelector(state => state.movdia.filteredMovements)
   const [page, setPage] = useState(1)
 
-
+  const findBankData = (selectedBank) => {
+    const bank = banks.find(bank => bank.value === selectedBank.target.value)
+    return bank
+  }
   const handleSelectBank = async (e) => {
-    const bank = banks.find(bank => bank.value === e.target.value)
-    dispatch(selectBank(bank))
-    dispatch(fetchMovDia(bank))
+    const selectedBank = findBankData(e)
+    dispatch(selectBank(selectedBank))
+    dispatch(fetchMovDia(selectedBank))
     setPage(1)
   }
   //PAGINATION
@@ -42,17 +45,17 @@ const MovimientoDia = () => {
           placeholder='Selecciona un banco'
           onChange={handleSelectBank}
           renderValue={(items) => {
-            return items.map((item, index) => (
-              <SelectItem key={index} value={item.value}>
-                <div className="flex gap-2 items-center" aria-label={item.label}>
-                  <Avatar src={item.img} alt={item.label} className="w-8 h-8" />
+            return items.map((item) => {
+              return (
+                <div className="flex gap-2 items-center">
+                  <Avatar src={item.data.img} alt={item.data.label} className="w-8 h-8" />
                   <div className='flex flex-col'>
-                    <span className="text-small">{item.label}</span>
-                    <span className="text-tiny text-default-400">{item.value}</span>
+                    <span className="text-small">{item.data.label}</span>
+                    <span className="text-tiny text-default-400">{item.data.value}</span>
                   </div>
                 </div>
-              </SelectItem>
-            ))
+              )
+            })
           }}
           size='lg'
         >
@@ -60,7 +63,7 @@ const MovimientoDia = () => {
             (bank) => {
               return (
                 <SelectItem key={bank.value} textValue={bank.label}>
-                  <div className="flex gap-2 items-center" aria-label={bank.label}>
+                  <div className="flex gap-2 items-center">
                     <Avatar src={bank.img} alt={bank.label} className="w-8 h-8" />
                     <div className='flex flex-col'>
                       <span className="text-small">{bank.label}</span>
