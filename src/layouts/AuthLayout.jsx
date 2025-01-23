@@ -7,7 +7,7 @@ function AuthLayout() {
                 {/* El logo o título de tu aplicación */}
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900">
-                        Interges
+                        GESTIB
                     </h2>
 
                 </div>

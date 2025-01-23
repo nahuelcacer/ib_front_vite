@@ -17,10 +17,14 @@ import EditarPersonal from './pages/administracion/EditarPersonal'
 import store from './store/store'
 import { Provider, useSelector } from 'react-redux'
 import authService from './service/auth'
+import ProtectedRoute from './routes/ProtectedRoutes'
+import Unauthorized from './pages/Unauthorized'
 
 const App = () => {
   const token = authService.getToken()
- 
+  // const {role } = authService.getUser()
+  // console.log(asda,  'USER APP')
+
   return (
     <BrowserRouter>
       <Routes>
@@ -31,14 +35,15 @@ const App = () => {
 
         <Route path="/" element={token ? <ProfileProvider><MainLayout /></ProfileProvider> : <Navigate to="/auth/login" />} >
           <Route path="/" element={<Home />} />
-          <Route path="/administracion" element={<Administracion />} />
+          <Route path="/administracion" element={<ProtectedRoute allowedRoles={['admin']}><Administracion /></ProtectedRoute>} />
           <Route path="/movimientos" element={<Movimientos />} />
           {/* <Route path="/sueldos" element={<Sueldos/>} /> */}
-          <Route path="/personal/crear" element={<CrearPersonal/>} />
-          <Route path="/personal/:id" element={<EditarPersonal/>} />
+          <Route path="/personal/crear" element={<CrearPersonal />} />
+          <Route path="/personal/:id" element={<EditarPersonal />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </BrowserRouter>
   )
