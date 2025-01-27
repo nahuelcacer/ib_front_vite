@@ -8,6 +8,7 @@ export const createMovement =  async (data) => {
         amount: movement_type === "Ingreso" ? Number(amount) : -Number(amount),
     }
     try {
+        
         const response = axios.post(`${import.meta.env.VITE_API_URL}movement`, movement)
     }
     catch(err){
