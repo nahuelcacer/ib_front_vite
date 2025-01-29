@@ -29,6 +29,7 @@ const MainLayout = () => {
         <SidebarItem to="/administracion" icon={<Settings size={20} />} text="Administracion" />
         <SidebarItem to="/movimientos" icon={<ArrowLeftRight size={20} />} text="Movimientos" />
         <SidebarItem to="/sueldos" icon={<Briefcase size={20} />} text="Sueldos" />
+        <SidebarItem to="/sueldos" icon={<Briefcase size={20} />} text="Sueldos" />
 
       </Sidebar>
       <main className="flex-1 p-4 text-center align-middle" aria-label="Contenido principal">
