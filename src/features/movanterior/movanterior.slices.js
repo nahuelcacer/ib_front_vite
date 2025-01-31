@@ -73,7 +73,6 @@ export const fetchMovAnterior = createAsyncThunk(
     'movanterior/fetchMovements',
     async (data, { dispatch }) => {
         try {
-            console.log(data)
             dispatch(setLoading(true));
             const movements = await getMovimientosAnteriores(data);
             dispatch(setMovements(movements));
