@@ -6,6 +6,7 @@ import authService from '../../service/auth'
 import { useDebounce } from 'react-use'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, Check, ChevronDown, Receipt, X } from 'lucide-react'
 import { formatArs } from '../../utils/formatter'
+import Filters from './Filters'
 
 
 
@@ -132,7 +133,7 @@ const MovAnt = () => {
                     <Table
                         aria-label='Tabla de movimientos del dia'
                         removeWrapper
-                        // topContent={<Estado setPage={setPage} />}
+                        topContent={<Filters/>}
                         bottomContent={
                             <div className='flex w-full justify-center'>
                                 <Pagination
