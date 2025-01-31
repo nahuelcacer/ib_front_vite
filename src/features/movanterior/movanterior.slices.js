@@ -4,36 +4,11 @@ import { formatDate } from "../../utils/formatter";
 
 export const movanteriorSlice = createSlice({
     name: 'movanterior',
-    initialState: { loading: false, error: null, movements: null, filteredMovements: [], date: null, filterStatus: null, textFilter: '', filterType: null },
+    initialState: { loading: false, error: null, movements: null, date: null },
 
     reducers: {
         setMovements: (state, action) => {
             state.movements = action.payload
-            state.filteredMovements = action.payload.movements_detail
-        },
-
-        setFilteredMovements: (state) => {
-            if (!state.movements) return;
-            
-            let filtered = state.movements.movements_detail;
-
-            if (state.textFilter.trim()) {
-                filtered = filtered.filter(movement => {
-                    const searchTerm = state.textFilter.toLowerCase();
-                    return movement.id.toString().toLowerCase().includes(searchTerm) ||
-                        movement.amount.toString().toLowerCase().includes(searchTerm) ||
-                        movement.code_description_bank.toString().toLowerCase().includes(searchTerm);
-                });
-            }
-
-            if (state.filterStatus !== null) {
-                filtered = filtered.filter(movement => movement.has_receipt === state.filterStatus);
-            }
-            
-            if (state.filterType !== null) {
-                filtered = filtered.filter(movement => movement.operation_code_ib !== state.filterType);
-            }
-            state.filteredMovements = filtered;
         },
         setLoading: (state, action) => {
             state.loading = action.payload
@@ -57,16 +32,9 @@ export const movanteriorSlice = createSlice({
         },
         setFilterStatus: (state, action) => {
             state.filterStatus = action.payload
-            // setFilteredMovements(state, action)
-        },
-        setTextFilter: (state, action) => {
-            state.textFilter = action.payload
-            // setFilteredMovements(state, action)
-        },
-        setFilterType: (state, action) => {
-            state.filterType = action.payload
-            // setFilteredMovements(state, action)
         }
+
+
     }
 })
 export const fetchMovAnterior = createAsyncThunk(

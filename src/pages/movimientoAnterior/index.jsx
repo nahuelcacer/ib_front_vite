@@ -1,7 +1,6 @@
 import { Avatar, Button, Chip, DatePicker, DateRangePicker, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@nextui-org/react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { select as selectBank } from '../../features/bank/bank.slices'
 import { fetchMovAnterior, setDate } from '../../features/movanterior/movanterior.slices'
 import authService from '../../service/auth'
 import { useDebounce } from 'react-use'
