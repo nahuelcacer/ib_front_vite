@@ -1,6 +1,6 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem } from '@nextui-org/react'
 import { ChevronDown } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 const estados = [
     {
         label: "Todas las transacciones",
@@ -16,30 +16,21 @@ const estados = [
     }
 ]
 const Filters = () => {
+    const [filterStatus, setFilterStatus] = useState(null)
+    const handleFilterStatus = (e) => {
+        // console.log(selectedKeys.values())
+        setFilterStatus(e.target.value)
+        console.log(e.target.value)
+    }
+    
     return (
 
         <div className='flex justify-end'>
-            <Dropdown>
-                <DropdownTrigger>
-                    <Button>
-                        {/* <ChevronDown className='h-4 w-4' /> {estados.find(estado => estado.value === filterStatus).label} */}
-                        <ChevronDown className='h-4 w-4' /> 
-                    </Button>
-                </DropdownTrigger>
-                {/* <DropdownMenu selectedKeys={new Set([filterStatus])} selectionMode="single" onSelectionChange={handleFilterStatus}> */}
-
-                <DropdownMenu>
-                    {
-                        estados.map((estado) => {
-                            return (
-                                <DropdownItem key={estado.value} >
-                                    {estado.label}
-                                </DropdownItem>
-                            )
-                        })
-                    }
-                </DropdownMenu>
-            </Dropdown>
+            <Select placeholder='Filtrar por estado' onChange={handleFilterStatus}>
+                {estados.map(estado => (
+                    <SelectItem key={estado.value}>{estado.label}</SelectItem>
+                ))}
+            </Select>
         </div>
     )
 }
